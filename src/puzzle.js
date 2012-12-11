@@ -39,17 +39,23 @@
     var tool = new Tool();
     var drag = null;
 
-    tool.onMouseDown = function (evt) {
-      var hit = tileGroup.hitTest(evt.point);
-      var tile = hit.item;
+    function tileAtPoint (point) {
+      var hit = tileGroup.hitTest(point);
+      return hit ? hit.item : null;
+    }
 
-      // Bring the item to the top.
+    tool.onMouseDown = function (evt) {
+      var tile = tileAtPoint(evt.point);
+
+      // Move the tile out of the tile group, so that it is
+      // always on top and tiles below it can be picked.
       tile.remove();
-      tileGroup.insertChild(tileGroup.length, tile);
+      paper.project.activeLayer.addChild(tile);
 
       drag = {
         tile: tile,
-        offset: tile.position.subtract(evt.point)
+        offset: tile.position.subtract(evt.point),
+        sourceIndex: indexAtPoint(tile.size, evt.point)
       };
     };
 
@@ -58,8 +64,18 @@
     };
 
     tool.onMouseUp = function (evt) {
-      var targetIndex = indexAtPoint(drag.tile.size, evt.point);
-      placeTileAtIndex(drag.tile, targetIndex);
+      var sourceTile = drag.tile;
+      var targetIndex = indexAtPoint(sourceTile.size, evt.point);
+      placeTileAtIndex(sourceTile, targetIndex);
+
+      var targetTile = tileAtPoint(evt.point);
+      if (targetTile) {
+        placeTileAtIndex(targetTile, drag.sourceIndex);
+      }
+
+      sourceTile.remove();
+      tileGroup.addChild(sourceTile);
+
       drag = null;
     };
   }
