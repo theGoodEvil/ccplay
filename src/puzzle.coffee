@@ -52,7 +52,7 @@ puzzle = (img, numTiles) ->
 
   tileAt = (point) ->
     hit = tileGroup.hitTest(point)
-    hit?.item || null
+    hit?.item
 
   limitToView = (point) ->
     Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
@@ -60,7 +60,7 @@ puzzle = (img, numTiles) ->
   tool.onMouseDown = (evt) ->
     tile = tileAt(evt.point)
 
-    # Move the tile out of the tile group, so that it is
+    # Take the tile out of the tile group, so that it is
     # always on top and tiles below it can be picked.
     tile.remove()
     paper.project.activeLayer.addChild(tile)
@@ -89,6 +89,7 @@ puzzle = (img, numTiles) ->
     sourceIndex = drag.sourceIndex
     placeTileAtIndex(targetTile, sourceIndex) if targetTile
 
+    # Put the tile back into the tile group.
     sourceTile.remove()
     tileGroup.addChild(sourceTile)
 
