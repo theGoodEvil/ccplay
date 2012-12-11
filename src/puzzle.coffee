@@ -31,20 +31,23 @@ initPuzzle = (img, numTiles) ->
     tileStart = gridId.multiply(tile.size)
     tile.position = tileStart.add(tile.size.divide(2))
 
-  indexAtPoint = (point) ->
-    point.divide(tileSize).floor()
-
   initInteraction = (tiles) ->
     tileGroup = new Group(tiles)
     tool = new Tool()
     drag = null
 
-    tileAtPoint = (point) ->
+    gridIdAt = (point) ->
+      point.divide(tileSize).floor()
+
+    tileAt = (point) ->
       hit = tileGroup.hitTest(point)
       hit?.item || null
 
+    limitToView = (point) ->
+      Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
+
     tool.onMouseDown = (evt) ->
-      tile = tileAtPoint(evt.point)
+      tile = tileAt(evt.point)
 
       # Move the tile out of the tile group, so that it is
       # always on top and tiles below it can be picked.
@@ -54,21 +57,23 @@ initPuzzle = (img, numTiles) ->
       drag =
         tile: tile
         offset: tile.position.subtract(evt.point)
-        sourceIndex: indexAtPoint(evt.point)
+        sourceIndex: gridIdAt(evt.point)
 
       return
 
     tool.onMouseDrag = (evt) ->
       newPosition = evt.point.add(drag.offset)
-      drag.tile.position = newPosition
+      drag.tile.position = limitToView(newPosition)
       return
 
     tool.onMouseUp = (evt) ->
+      dropPoint = limitToView(evt.point)
+
       sourceTile = drag.tile
-      targetIndex = indexAtPoint(evt.point)
+      targetIndex = gridIdAt(dropPoint)
       placeTileAtIndex(sourceTile, targetIndex)
 
-      targetTile = tileAtPoint(evt.point)
+      targetTile = tileAt(dropPoint)
       sourceIndex = drag.sourceIndex
       placeTileAtIndex(targetTile, sourceIndex) if targetTile
 
