@@ -37,6 +37,32 @@
 
     // Remove Original Image
     img.remove();
+
+    // Interaction Handling
+    var tool = new Tool();
+    var drag = null;
+
+    tool.onMouseDown = function (evt) {
+      var hit = tiles.hitTest(evt.point);
+      var item = hit.item;
+
+      // Bring the item to the top.
+      item.remove();
+      tiles.insertChild(tiles.length, item);
+
+      drag = {
+        item: item,
+        offset: item.position.subtract(evt.point)
+      };
+    };
+
+    tool.onMouseDrag = function (evt) {
+      drag.item.position = evt.point.add(drag.offset);
+    };
+
+    tool.onMouseUp = function (evt) {
+      drag = null;
+    };
   }
 
   // Paper.js Setup
