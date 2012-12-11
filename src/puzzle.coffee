@@ -6,12 +6,15 @@
 NUM_TILES = 4
 
 
-# The Puzzle
+# Puzzle code
 
-initPuzzle = (img, numTiles) ->
+puzzle = (img, numTiles) ->
+
+  # Compute tile and view size
   tileSize = img.size.divide(numTiles * 2).floor().multiply(2)
   view.viewSize = tileSize.multiply([numTiles, numTiles])
 
+  # Create tiles
   computeGridIds = ->
     gridIds = []
     for y in [0...NUM_TILES]
@@ -27,80 +30,79 @@ initPuzzle = (img, numTiles) ->
     tile.gridId = gridId
     return tile
 
-  placeTileAtIndex = (tile, gridId) ->
-    tileStart = gridId.multiply(tile.size)
-    tile.position = tileStart.add(tile.size.divide(2))
-
-  initInteraction = (tiles) ->
-    tileGroup = new Group(tiles)
-    tool = new Tool()
-    drag = null
-
-    gridIdAt = (point) ->
-      point.divide(tileSize).floor()
-
-    tileAt = (point) ->
-      hit = tileGroup.hitTest(point)
-      hit?.item || null
-
-    limitToView = (point) ->
-      Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
-
-    tool.onMouseDown = (evt) ->
-      tile = tileAt(evt.point)
-
-      # Move the tile out of the tile group, so that it is
-      # always on top and tiles below it can be picked.
-      tile.remove()
-      paper.project.activeLayer.addChild(tile)
-
-      drag =
-        tile: tile
-        offset: tile.position.subtract(evt.point)
-        sourceIndex: gridIdAt(evt.point)
-
-      return
-
-    tool.onMouseDrag = (evt) ->
-      newPosition = evt.point.add(drag.offset)
-      drag.tile.position = limitToView(newPosition)
-      return
-
-    tool.onMouseUp = (evt) ->
-      dropPoint = limitToView(evt.point)
-
-      sourceTile = drag.tile
-      targetIndex = gridIdAt(dropPoint)
-      placeTileAtIndex(sourceTile, targetIndex)
-
-      targetTile = tileAt(dropPoint)
-      sourceIndex = drag.sourceIndex
-      placeTileAtIndex(targetTile, sourceIndex) if targetTile
-
-      sourceTile.remove()
-      tileGroup.addChild(sourceTile)
-
-      drag = null
-      return
-
-  # Create tiles
   gridIds = computeGridIds()
   tiles = _.map(gridIds, (gridId) -> createTile(gridId))
 
   # Place tiles randomly
+  placeTileAtIndex = (tile, gridId) ->
+    tileStart = gridId.multiply(tile.size)
+    tile.position = tileStart.add(tile.size.divide(2))
+
   _.chain(gridIds)
     .shuffle()
     .each((gridId, i) -> placeTileAtIndex(tiles[i], gridId))
 
-  initInteraction(tiles)
+  # Handle interaction
+  tileGroup = new Group(tiles)
+  tool = new Tool()
+  drag = null
 
-# Paper.js Setup
+  gridIdAt = (point) ->
+    point.divide(tileSize).floor()
+
+  tileAt = (point) ->
+    hit = tileGroup.hitTest(point)
+    hit?.item || null
+
+  limitToView = (point) ->
+    Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
+
+  tool.onMouseDown = (evt) ->
+    tile = tileAt(evt.point)
+
+    # Move the tile out of the tile group, so that it is
+    # always on top and tiles below it can be picked.
+    tile.remove()
+    paper.project.activeLayer.addChild(tile)
+
+    drag =
+      tile: tile
+      offset: tile.position.subtract(evt.point)
+      sourceIndex: gridIdAt(evt.point)
+
+    return
+
+  tool.onMouseDrag = (evt) ->
+    newPosition = evt.point.add(drag.offset)
+    drag.tile.position = limitToView(newPosition)
+
+    return
+
+  tool.onMouseUp = (evt) ->
+    dropPoint = limitToView(evt.point)
+
+    sourceTile = drag.tile
+    targetIndex = gridIdAt(dropPoint)
+    placeTileAtIndex(sourceTile, targetIndex)
+
+    targetTile = tileAt(dropPoint)
+    sourceIndex = drag.sourceIndex
+    placeTileAtIndex(targetTile, sourceIndex) if targetTile
+
+    sourceTile.remove()
+    tileGroup.addChild(sourceTile)
+
+    drag = null
+    return
+
+
+# Loading code
+
 window.onload = ->
   paper.install(window)
   paper.setup(document.getElementById("puzzleCanvas"))
-
-  paper.view.onFrame = ->
-    paper.view.draw()
+  paper.view.onFrame = -> paper.view.draw()
 
   img = new Raster("puzzleImage")
-  initPuzzle(img, NUM_TILES)
+  puzzle(img, NUM_TILES)
+  img.remove()
