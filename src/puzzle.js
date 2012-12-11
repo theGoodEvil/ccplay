@@ -30,6 +30,40 @@
     tile.position = tileStart.add(tile.size.divide(2));
   }
 
+  function indexAtPoint (tileSize, point) {
+    return point.divide(tileSize).floor();
+  }
+
+  function initInteraction (tiles) {
+    var tileGroup = new Group(tiles);
+    var tool = new Tool();
+    var drag = null;
+
+    tool.onMouseDown = function (evt) {
+      var hit = tileGroup.hitTest(evt.point);
+      var tile = hit.item;
+
+      // Bring the item to the top.
+      tile.remove();
+      tileGroup.insertChild(tileGroup.length, tile);
+
+      drag = {
+        tile: tile,
+        offset: tile.position.subtract(evt.point)
+      };
+    };
+
+    tool.onMouseDrag = function (evt) {
+      drag.tile.position = evt.point.add(drag.offset);
+    };
+
+    tool.onMouseUp = function (evt) {
+      var targetIndex = indexAtPoint(drag.tile.size, evt.point);
+      placeTileAtIndex(drag.tile, targetIndex);
+      drag = null;
+    };
+  }
+
   function initPuzzle () {
     // Load Image
     var img = new Raster("puzzleImage");
@@ -40,7 +74,6 @@
 
     // Create Image Tiles
     var tiles = createTiles(img, NUM_TILES);
-    var tileGroup = new Group(tiles);
 
     // Shuffle Tiles
     _.chain(tiles)
@@ -53,31 +86,7 @@
     // Remove Original Image
     img.remove();
 
-    // Interaction Handling
-    var tool = new Tool();
-    var drag = null;
-
-    tool.onMouseDown = function (evt) {
-      var hit = tileGroup.hitTest(evt.point);
-      var item = hit.item;
-
-      // Bring the item to the top.
-      item.remove();
-      tileGroup.insertChild(tileGroup.length, item);
-
-      drag = {
-        item: item,
-        offset: item.position.subtract(evt.point)
-      };
-    };
-
-    tool.onMouseDrag = function (evt) {
-      drag.item.position = evt.point.add(drag.offset);
-    };
-
-    tool.onMouseUp = function (evt) {
-      drag = null;
-    };
+    initInteraction(tiles);
   }
 
   // Paper.js Setup
