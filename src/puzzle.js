@@ -4,6 +4,22 @@
   // Parameters
   var NUM_TILES = 4;
 
+  // Put paper.js classes into global namespace
+  paper.install(window);
+
+  // Tile class
+  var Tile = Raster.extend({
+    initialize: function (gridIndex, data) {
+      this.base(data);
+      this.gridIndex = gridIndex;
+    },
+
+    snapToGrid: function () {
+      var tileStart = this.gridIndex.multiply(this.size);
+      this.position = tileStart.add(this.size.divide(2));
+    }
+  });
+
   // Functions
   function createTiles (img, numTiles) {
     var tileSize = img.size.divide(numTiles * 2).floor().multiply(2);
@@ -11,11 +27,12 @@
 
     for (var y = 0; y < numTiles; y++) {
       for (var x = 0; x < numTiles; x++) {
-        var tileStart = new Point(x, y).multiply(tileSize);
+        var gridIndex = new Point(x, y);
+        var tileStart = gridIndex.multiply(tileSize);
         var tileRect = new Rectangle(tileStart, tileSize);
 
-        var tile = new Raster(img.getSubImage(tileRect));
-        tile.position = tileStart.add(tileSize.divide(2));
+        var tile = new Tile(gridIndex, img.getSubImage(tileRect));
+        tile.snapToGrid();
 
         tiles.addChild(tile);
       };
@@ -67,7 +84,6 @@
 
   // Paper.js Setup
   window.onload = function () {
-    paper.install(window);
     paper.setup(document.getElementById("puzzleCanvas"));
 
     paper.view.onFrame = function () {
