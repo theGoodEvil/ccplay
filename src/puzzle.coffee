@@ -104,5 +104,6 @@ window.onload = ->
   paper.view.onFrame = -> paper.view.draw()
 
   img = new Raster("puzzleImage")
+  img.visible = false
   puzzle(img, NUM_TILES)
   img.remove()
