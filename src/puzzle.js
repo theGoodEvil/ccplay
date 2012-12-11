@@ -2,29 +2,40 @@
 var NUM_TILES = 4;
 
 
-// Load Image
-var img = new Raster("puzzleImage");
-// img.visible = false;
+function createTiles(img, numTiles) {
+  var tileSize = (img.size / numTiles / 2).floor() * 2;
+  var tiles = [];
 
-// Resize Canvas
-view.viewSize = img.size;
-img.position = view.center;
+  for (var y = 0; y < numTiles; y++) {
+    for (var x = 0; x < numTiles; x++) {
+      var tileStart = tileSize * [x, y];
+      var tileRect = new Rectangle(tileStart, tileSize);
 
-// Create Image Tiles
-var tileSize = (img.size / NUM_TILES / 2).floor() * 2;
-var tiles = [];
+      var tile = new Raster(img.getSubImage(tileRect));
+      tile.position = tileStart + tileSize / 2;
 
-for (var y = 0; y < NUM_TILES; y++) {
-  for (var x = 0; x < NUM_TILES; x++) {
-    var tileStart = tileSize * [x, y];
-    var tileRect = new Rectangle(tileStart, tileSize);
-
-    var tile = new Raster(img.getSubImage(tileRect));
-    tile.position = tileStart + tileSize / 2;
-
-    tiles.push(tile);
+      tiles.push(tile);
+    };
   };
-};
 
-// Remove Original Image
-img.remove();
+  return tiles;
+}
+
+
+function main() {
+  // Load Image
+  var img = new Raster("puzzleImage");
+
+  // Resize Canvas
+  view.viewSize = img.size;
+  img.position = view.center;
+
+  // Create Image Tiles
+  createTiles(img, NUM_TILES);
+
+  // Remove Original Image
+  img.remove();
+}
+
+
+main();
