@@ -1,17 +1,17 @@
-(function() {
+(function () {
   "use strict";
 
   // Parameters
   var NUM_TILES = 4;
 
   // Functions
-  function createTiles(img, numTiles) {
+  function createTiles (img, numTiles) {
     var tileSize = img.size.divide(numTiles * 2).floor().multiply(2);
     var tiles = new Group();
 
     for (var y = 0; y < numTiles; y++) {
       for (var x = 0; x < numTiles; x++) {
-        var tileStart = tileSize.multiply([x, y]);
+        var tileStart = new Point(x, y).multiply(tileSize);
         var tileRect = new Rectangle(tileStart, tileSize);
 
         var tile = new Raster(img.getSubImage(tileRect));
@@ -24,8 +24,7 @@
     return tiles;
   }
 
-
-  function initPuzzle() {
+  function initPuzzle () {
     // Load Image
     var img = new Raster("puzzleImage");
 
@@ -34,20 +33,21 @@
     img.position = view.center;
 
     // Create Image Tiles
-    createTiles(img, NUM_TILES);
+    var tiles = createTiles(img, NUM_TILES);
 
     // Remove Original Image
     img.remove();
   }
 
-
-  window.onload = function() {
+  // Paper.js Setup
+  window.onload = function () {
     paper.install(window);
     paper.setup(document.getElementById("puzzleCanvas"));
-    initPuzzle();
 
-    paper.view.onFrame = function() {
+    paper.view.onFrame = function () {
       paper.view.draw();
     };
+
+    initPuzzle();
   };
 }());
