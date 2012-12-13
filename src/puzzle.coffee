@@ -99,12 +99,12 @@ puzzle = (img, numTiles) ->
 
 # Loading code
 
-window.onload = ->
-  paper.install(window)
-  paper.setup(document.getElementById("puzzleCanvas"))
-  paper.view.onFrame = -> paper.view.draw()
+window.ccplay =
+  initPuzzle: (canvasId, imgId) ->
+    paper.install(window)
+    paper.setup(document.getElementById(canvasId))
+    paper.view.onFrame = -> paper.view.draw()
 
-  img = new Raster("puzzleImage")
-  img.visible = false
-  puzzle(img, NUM_TILES)
-  img.remove()
+    img = new Raster(imgId)
+    img.visible = false
+    puzzle(img, NUM_TILES)
