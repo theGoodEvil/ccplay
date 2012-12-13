@@ -57,6 +57,9 @@ puzzle = (img, numTiles) ->
   limitToView = (point) ->
     Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
 
+  finished = ->
+    _.every(tiles, (tile) -> gridIdAt(tile.position).equals(tile.gridId))
+
   tool.onMouseDown = (evt) ->
     tile = tileAt(evt.point)
 
@@ -94,6 +97,8 @@ puzzle = (img, numTiles) ->
     tileGroup.addChild(sourceTile)
 
     drag = null
+    tool.remove() if finished()
+
     return
 
 
