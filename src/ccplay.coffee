@@ -46,11 +46,11 @@ doRenderPage = (data) ->
     ccplay.initPaper(PUZZLE_CANVAS_ID)
     puzzle = new ccplay.Puzzle(PUZZLE_IMAGE_ID, 4)
 
-    $("#showSolution").mousedown ->
+    $("#showSolution").bind "mousedown touchstart", ->
       puzzle.showSolution()
-
-      $(document).one "mouseup", ->
+      $(document).one "mouseup touchend touchcancel", ->
         puzzle.hideSolution()
+      return false
 
 renderPage = ->
   $.getJSON("image.php").done(doRenderPage)
