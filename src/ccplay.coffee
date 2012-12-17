@@ -24,6 +24,9 @@ PAGE_TEMPLATE = """
         <a href="<%= link %>">Wikipedia</a>
       </li>
     <% }) %>
+    <li>
+      <a href="javascript:history.go(0);">Neues Bild</a>
+    </li>
   </ul>
 """
 
