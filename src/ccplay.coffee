@@ -10,6 +10,13 @@ PAGE_TEMPLATE = """
   <h1><%= title %></h1>
   <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
   <img id="#{PUZZLE_IMAGE_ID}" src="<%= url %>" />
+  <ul>
+    <% _.each(links, function(link) { %>
+      <li>
+        <a href="<%= link %>">Wikipedia</a>
+      </li>
+    <% }) %>
+  </ul>
 """
 
 
