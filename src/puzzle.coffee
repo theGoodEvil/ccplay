@@ -105,6 +105,7 @@ class Puzzle
 
       return
 
+
 # Loading code
 
 window.ccplay =

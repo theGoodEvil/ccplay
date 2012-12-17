@@ -31,7 +31,7 @@ PAGE_TEMPLATE = """
       </li>
     <% }) %>
     <li>
-      <a href="javascript:history.go(0);">Neues Bild</a>
+      <a href="javascript:document.location.reload();">Neues Bild</a>
     </li>
   </ul>
 """
@@ -39,16 +39,20 @@ PAGE_TEMPLATE = """
 
 # Loading code
 
-$(document).ready ->
-  $.getJSON("image.php").done (data) ->
-    $("body").html(_.template(PAGE_TEMPLATE, data))
+doRenderPage = (data) ->
+  $("body").html(_.template(PAGE_TEMPLATE, data))
 
-    $("##{PUZZLE_IMAGE_ID}").one "load", ->
-      ccplay.initPaper(PUZZLE_CANVAS_ID)
-      puzzle = new ccplay.Puzzle(PUZZLE_IMAGE_ID, 4)
+  $("##{PUZZLE_IMAGE_ID}").one "load", ->
+    ccplay.initPaper(PUZZLE_CANVAS_ID)
+    puzzle = new ccplay.Puzzle(PUZZLE_IMAGE_ID, 4)
 
-      $("#showSolution").mousedown ->
-        puzzle.showSolution()
+    $("#showSolution").mousedown ->
+      puzzle.showSolution()
 
-        $(document).one "mouseup", ->
-          puzzle.hideSolution()
+      $(document).one "mouseup", ->
+        puzzle.hideSolution()
+
+renderPage = ->
+  $.getJSON("image.php").done(doRenderPage)
+
+$(document).ready(renderPage)
