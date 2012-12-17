@@ -15,6 +15,7 @@ class Puzzle
     # Init original image
     @img = new Raster(imgId)
     @img.visible = false
+    @img.placeAt(new Point(0, 0))
 
     # Init tiles
     @tileSize = @img.size.divide(@numTiles * 2).floor().multiply(2)
@@ -31,6 +32,12 @@ class Puzzle
 
     # Install event handlers
     _.extend(new Tool(), @eventHandlers())
+
+  showSolution: -> @doShowSolution(true)
+  hideSolution: -> @doShowSolution(false)
+  doShowSolution: (showSolution) ->
+    @tileGroup.visible = !showSolution
+    @img.visible = showSolution
 
   gridIds: _.once ->
     ids = []
@@ -101,9 +108,8 @@ class Puzzle
 # Loading code
 
 window.ccplay =
-  initPuzzle: (canvasId, imgId, numTiles = 4) ->
+  Puzzle: Puzzle
+  initPaper: (canvasId) ->
     paper.install(window)
     paper.setup(document.getElementById(canvasId))
     paper.view.onFrame = -> paper.view.draw()
-
-    new Puzzle(imgId, numTiles)
