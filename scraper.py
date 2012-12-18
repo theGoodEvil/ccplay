@@ -22,6 +22,9 @@ class CCPlayImage(Base):
     title = Column(String(1023))
     author = Column(String(255))
     archiveid = Column(String(127))
+    year = Column(Integer)
+    month = Column(Integer)
+    day = Column(Integer)
     url = Column(String(1023))
     mime = Column(String(255))
     sha1 = Column(String(40))
@@ -44,30 +47,39 @@ class CCPlayImage(Base):
         info = image_data['imageinfo'][0]
         meta = info['metadata']
 
-        title = None
-        author = None
-        archiveid = None
-
-        if meta is not None:
-            for pair in meta:
-                if pair['name'] == 'Headline':
-                    title = get_value(pair)
-                elif pair['name'] == 'ObjectName':
-                    archiveid = get_value(pair)
-                elif pair['name'] == 'Artist':
-                    author = get_value(pair)
-
-        return CCPlayImage(
+        image = CCPlayImage(
             pageid=image_data['pageid'],
-            title=title,
-            author=author,
-            archiveid=archiveid,
+            title=None,
+            author=None,
+            archiveid=None,
+            year=None,
+            month=None,
+            day=None,
             url=info['url'],
             mime=info['mime'],
             sha1=info['sha1'],
             width=info['width'],
             height=info['height']
         )
+
+        if meta is not None:
+            for pair in meta:
+                name = pair['name']
+                if name == 'Headline':
+                    image.title = get_value(pair)
+                elif name == 'ObjectName':
+                    image.archiveid = get_value(pair)
+                elif name == 'Artist':
+                    image.author = get_value(pair)
+                elif name == 'DateTimeOriginal':
+                    dateString = get_value(pair).split()[0]
+                    try:
+                        image.year, image.month, image.day = map(int, dateString.split(':'))
+                    except ValueError:
+                        print dateString
+                        raise
+
+        return image
 
 
 class WikiLink(Base):
@@ -121,7 +133,7 @@ def scrape_images(session):
 
     for image_data in iterate_image_data():
         img = CCPlayImage.create_from_image_data(image_data)
-        if img.title is not None:
+        if img.title is not None and img.year is not None:
             session.add(img)
             session.commit()
 
