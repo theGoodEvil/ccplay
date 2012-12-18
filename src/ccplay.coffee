@@ -7,7 +7,7 @@ PUZZLE_CANVAS_ID = "puzzleCanvas"
 PUZZLE_IMAGE_ID = "puzzleImage"
 
 PAGE_TEMPLATE = """
-  <h1><%= title %></h1>
+  <h1><%= year %>: <%= title %></h1>
 
   <div>
     <p>
