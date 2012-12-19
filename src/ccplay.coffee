@@ -4,13 +4,11 @@
 # Parameters
 
 PUZZLE_CANVAS_ID = "puzzleCanvas"
-PUZZLE_IMAGE_ID = "puzzleImage"
 
 PAGE_TEMPLATE = """
   <h1><%= year %>: <%= title %></h1>
 
   <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
-  <img id="#{PUZZLE_IMAGE_ID}" src="<%= url %>" />
   
   <div>
     Bildlizenz:
@@ -40,15 +38,19 @@ PAGE_TEMPLATE = """
 doRenderPage = (data) ->
   $("body").html(_.template(PAGE_TEMPLATE, data))
 
-  $("##{PUZZLE_IMAGE_ID}").one "load", ->
+  img = document.createElement("img")
+
+  img.onload = ->
     ccplay.initPaper(PUZZLE_CANVAS_ID)
-    puzzle = new ccplay.Puzzle(PUZZLE_IMAGE_ID, 4)
+    puzzle = new ccplay.Puzzle(img, 4)
 
     $("#showSolution").bind "mousedown touchstart", ->
       puzzle.showSolution()
       $(document).one "mouseup touchend touchcancel", ->
         puzzle.hideSolution()
       return false
+
+  img.src = "proxy.php?url=#{data.url}"
 
 renderPage = ->
   $.getJSON("image.php").done(doRenderPage)
