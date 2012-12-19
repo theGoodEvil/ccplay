@@ -6,19 +6,26 @@
 limitToView = (point) ->
   Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
 
+paper.Raster::isLandscape = ->
+  @width >= @height
+
 paper.Raster::placeAt = (gridId) ->
   tileStart = gridId.multiply(@size)
   @position = tileStart.add(@size.divide(2))
 
 class Puzzle
+  CROP_SIZE = 5
+  LABEL_HEIGHT = 22
+  LABEL_WIDTH = 400
+
   constructor: (imgId, @numTiles) ->
     # Init original image
     @img = new Raster(imgId)
     @img.visible = false
-    @img.placeAt(new Point(0, 0))
+    @img.position = @img.size.divide(2).subtract(@cropOffset())
 
     # Init tiles
-    @tileSize = @img.size.divide(@numTiles * 2).floor().multiply(2)
+    @tileSize = @croppedSize().divide(@numTiles * 2).floor().multiply(2)
     @tiles = _.map(@gridIds(), (gridId) => @createTileAt(gridId))
     @tileGroup = new Group(@tiles)
 
@@ -39,6 +46,32 @@ class Puzzle
     @tileGroup.visible = !showSolution
     @img.visible = showSolution
 
+  shouldCrop: _.once ->
+    # Position the image so that pixel indices work as expected
+    originalPosition = @img.position
+    @img.position = @img.size.divide(2)
+
+    labelRect = if @img.isLandscape()
+      new Rectangle(@img.width - LABEL_WIDTH, @img.height - LABEL_HEIGHT, LABEL_WIDTH, LABEL_HEIGHT)
+    else
+      new Rectangle(@img.width - LABEL_HEIGHT, 0, LABEL_HEIGHT, LABEL_WIDTH)
+    color = @img.getAverageColor(labelRect)
+
+    @img.position = originalPosition
+    return color.red > 0.998 and color.green > 0.998 and color.blue > 0.998
+
+  croppedSize: _.once ->
+    if @shouldCrop()
+      if @img.isLandscape()
+        @img.size.subtract([2 * CROP_SIZE, CROP_SIZE + LABEL_HEIGHT])
+      else
+        @img.size.subtract([CROP_SIZE + LABEL_HEIGHT, 2 * CROP_SIZE])
+    else
+      @img.size
+
+  cropOffset: _.once ->
+    if @shouldCrop() then new Point(CROP_SIZE, CROP_SIZE) else new Point(0, 0)
+
   gridIds: _.once ->
     ids = []
     for y in [0...@numTiles]
@@ -50,7 +83,7 @@ class Puzzle
     point.divide(@tileSize).floor()
 
   createTileAt: (gridId) ->
-    tileStart = gridId.multiply(@tileSize)
+    tileStart = @cropOffset().add(gridId.multiply(@tileSize))
     tileRect = new Rectangle(tileStart, @tileSize)
     tile = new Raster(@img.getSubImage(tileRect))
     tile.gridId = gridId
