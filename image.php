@@ -33,6 +33,10 @@ $linkStatement->bindValue(1, $image['id'], PDO::PARAM_INT);
 $linkStatement->execute();
 $links = $linkStatement->fetchAll(PDO::FETCH_COLUMN, 0);
 
+/* Set headers */
+header("Content-Type: application/json");
+header("Cache-Control: no-cache");
+
 /* Return JSON data */
 $image['links'] = $links;
 echo json_encode($image);
