@@ -14,8 +14,8 @@ from sqlalchemy.orm import relationship, sessionmaker
 Base = declarative_base()
 
 
-class CCPlayImage(Base):
-    __tablename__ = 'CCPlayImages'
+class Image(Base):
+    __tablename__ = 'Images'
 
     id = Column(Integer, primary_key=True)
     pageid = Column(Integer, unique=True)
@@ -33,7 +33,7 @@ class CCPlayImage(Base):
     wikilinks = relationship('WikiLink')
 
     def __repr__(self):
-        return "<CCPlayImage (pageid=%i)>" % (self.pageid)
+        return "<Image (pageid=%i)>" % (self.pageid)
 
     @classmethod
     def create_from_image_data(cls, image_data):
@@ -47,7 +47,7 @@ class CCPlayImage(Base):
         info = image_data['imageinfo'][0]
         meta = info['metadata']
 
-        image = CCPlayImage(
+        image = Image(
             pageid=image_data['pageid'],
             title=None,
             author=None,
@@ -132,7 +132,7 @@ def scrape_images(session):
     start_time = time.time()
 
     for image_data in iterate_image_data():
-        img = CCPlayImage.create_from_image_data(image_data)
+        img = Image.create_from_image_data(image_data)
         if img.title is not None and img.year is not None:
             session.add(img)
             session.commit()
@@ -145,7 +145,7 @@ def scrape_images(session):
 def iterate_image_batches(batch_size):
     batch_start = 0
     while True:
-        images = list(session.query(CCPlayImage).offset(batch_start).limit(batch_size))
+        images = list(session.query(Image).offset(batch_start).limit(batch_size))
         batch_start = batch_start + batch_size
 
         if len(images) == 0:
@@ -185,7 +185,7 @@ def scrape_wiki_links(session):
                     link = WikiLink(url=gu['url'])
                     session.add(link)
 
-                    img = session.query(CCPlayImage).filter_by(pageid=pageid).first()
+                    img = session.query(Image).filter_by(pageid=pageid).first()
                     img.wikilinks.append(link)
         session.commit()
 

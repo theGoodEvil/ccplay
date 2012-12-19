@@ -17,12 +17,12 @@ if ($century > 0 && $century < 2000) {
 }
 
 /* Get random image offset */
-$countStatement = $pdo->query('SELECT COUNT(*) AS imageCount FROM CCPlayImages' . $where);
+$countStatement = $pdo->query('SELECT COUNT(*) AS imageCount FROM Images' . $where);
 $row = $countStatement->fetch(PDO::FETCH_ASSOC);
 $randomOffset = mt_rand(0, $row['imageCount'] - 1);
 
 /* Fetch random image */
-$imageStatement = $pdo->prepare('SELECT * FROM CCPlayImages' . $where . ' LIMIT ?, 1');
+$imageStatement = $pdo->prepare('SELECT * FROM Images' . $where . ' LIMIT ?, 1');
 $imageStatement->bindValue(1, $randomOffset, PDO::PARAM_INT);
 $imageStatement->execute();
 $image = $imageStatement->fetch(PDO::FETCH_ASSOC);
