@@ -9,18 +9,16 @@ PUZZLE_IMAGE_ID = "puzzleImage"
 PAGE_TEMPLATE = """
   <h1><%= year %>: <%= title %></h1>
 
-  <div>
-    <p>
-      Dieses Bild ist unter der Creative Commons-Lizenz <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland</a> lizenziert.
-    </p>
-    <p>
-      Namensnennung: Bundesarchiv, <%= archiveid %> / <%= author %> / CC-BY-SA
-    </p>
-  </div>
-
   <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
   <img id="#{PUZZLE_IMAGE_ID}" src="<%= url %>" />
   
+  <div>
+    Bildlizenz:
+    <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
+    / <%= author %> /
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
+  </div>
+
   <ul>
     <li id="showSolution">
       L&ouml;sung
