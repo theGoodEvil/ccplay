@@ -27,7 +27,7 @@ PAGE_TEMPLATE = """
     </li>
     <% _.each(links, function(link) { %>
       <li>
-        <a href="<%= link %>">Wikipedia</a>
+        <a href="<%= link %>" target="_blank">Wikipedia</a>
       </li>
     <% }) %>
     <li>
