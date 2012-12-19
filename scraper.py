@@ -22,7 +22,7 @@ class Image(Base):
     title = Column(String(1023))
     author = Column(String(255))
     archiveid = Column(String(127))
-    year = Column(Integer)
+    year = Column(Integer, index=True)
     month = Column(Integer)
     day = Column(Integer)
     url = Column(String(1023))
@@ -87,7 +87,7 @@ class WikiLink(Base):
 
     id = Column(Integer, primary_key=True)
     url = Column(String(255))
-    imageid = Column(Integer, ForeignKey('CCPlayImages.id'))
+    imageid = Column(Integer, ForeignKey('Images.id'), index=True)
 
 
 # IMAGE SCRAPING
