@@ -34,7 +34,7 @@ PAGE_TEMPLATE = """
     </li>
     <% if (!random) { %>
       <li>
-        <a href="ccplay.html?decade=<% print(decade + 10) %>">N&auml;chstes Jahrzehnt</a>
+        <a href="<%= nextLink %>">N&auml;chstes Jahrzehnt</a>
       </li>
     <% } %>
   </ul>
@@ -55,9 +55,13 @@ getQueryParameter = _.memoize (name) ->
 # Loading code
 
 renderPage = ->
+  decade = +getQueryParameter("decade") || FIRST_DECADE
   params =
     random: !!getQueryParameter("random")
-    decade: +getQueryParameter("decade") || FIRST_DECADE
+    nextLink: if decade < LAST_DECADE
+      "ccplay.html?decade=#{decade + 10}"
+    else
+      "finish.html"
 
   doRenderPage = (data) ->
     _.extend(data, params)
@@ -78,7 +82,7 @@ renderPage = ->
     img.src = "proxy.php?url=#{data.url}"
 
   dataUrlParts = ["image.php"]
-  dataUrlParts.push($.param(decade: params.decade)) unless params.random
+  dataUrlParts.push($.param(decade: decade)) unless params.random
   $.getJSON(dataUrlParts.join("?")).done(doRenderPage)
 
 $(document).ready(renderPage)
