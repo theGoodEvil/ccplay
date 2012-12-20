@@ -29,6 +29,11 @@ PAGE_TEMPLATE = """
     <li>
       <a href="javascript:document.location.reload();">Neues Bild</a>
     </li>
+    <% if (century) { %>
+      <li>
+        <a href="index.html?century=<% print(century + 10) %>">N&auml;chstes Jahrzehnt</a>
+      </li>
+    <% } %>
   </ul>
 """
 
@@ -47,6 +52,7 @@ getQueryParameter = _.memoize (name) ->
 # Loading code
 
 doRenderPage = (data) ->
+  data.century = +getQueryParameter("century")
   $("body").html(_.template(PAGE_TEMPLATE, data))
 
   img = document.createElement("img")
@@ -64,7 +70,7 @@ doRenderPage = (data) ->
   img.src = "proxy.php?url=#{data.url}"
 
 renderPage = ->
-  century = getQueryParameter("century")
+  century = +getQueryParameter("century")
   dataUrlParts = ["image.php"]
   dataUrlParts.push($.param(century: century)) if century
   $.getJSON(dataUrlParts.join("?")).done(doRenderPage)
