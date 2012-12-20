@@ -31,7 +31,7 @@ PAGE_TEMPLATE = """
     </li>
     <% if (century) { %>
       <li>
-        <a href="index.html?century=<% print(century + 10) %>">N&auml;chstes Jahrzehnt</a>
+        <a href="ccplay.html?century=<% print(century + 10) %>">N&auml;chstes Jahrzehnt</a>
       </li>
     <% } %>
   </ul>
