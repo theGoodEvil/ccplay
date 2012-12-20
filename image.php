@@ -10,10 +10,10 @@ $pdo = new PDO('mysql:dbname=' . DATABASE, USERNAME, PASSWORD);
 $pdo->query('SET NAMES "utf8"');
 
 /* Prepare WHERE statement to filter results */
-$century = intval($_GET['century']);
+$decade = intval($_GET['decade']);
 $where = '';
-if ($century > 0 && $century < 2000) {
-    $where = ' WHERE year >= ' . $century . ' AND year < ' . ($century + 10);
+if ($decade > 0 && $decade < 2000) {
+    $where = ' WHERE year >= ' . $decade . ' AND year < ' . ($decade + 10);
 }
 
 /* Get random image offset */

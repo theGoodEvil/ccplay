@@ -3,6 +3,9 @@
 
 # Parameters
 
+FIRST_DECADE = 1920
+LAST_DECADE = 1990
+
 PUZZLE_CANVAS_ID = "puzzleCanvas"
 
 PAGE_TEMPLATE = """
@@ -29,9 +32,9 @@ PAGE_TEMPLATE = """
     <li>
       <a href="javascript:document.location.reload();">Neues Bild</a>
     </li>
-    <% if (century) { %>
+    <% if (!random) { %>
       <li>
-        <a href="ccplay.html?century=<% print(century + 10) %>">N&auml;chstes Jahrzehnt</a>
+        <a href="ccplay.html?decade=<% print(decade + 10) %>">N&auml;chstes Jahrzehnt</a>
       </li>
     <% } %>
   </ul>
@@ -51,28 +54,31 @@ getQueryParameter = _.memoize (name) ->
 
 # Loading code
 
-doRenderPage = (data) ->
-  data.century = +getQueryParameter("century")
-  $("body").html(_.template(PAGE_TEMPLATE, data))
-
-  img = document.createElement("img")
-
-  img.onload = ->
-    ccplay.initPaper(PUZZLE_CANVAS_ID)
-    puzzle = new ccplay.Puzzle(img, 4)
-
-    $("#showSolution").bind "mousedown touchstart", ->
-      puzzle.showSolution()
-      $(document).one "mouseup touchend touchcancel", ->
-        puzzle.hideSolution()
-      return false
-
-  img.src = "proxy.php?url=#{data.url}"
-
 renderPage = ->
-  century = +getQueryParameter("century")
+  params =
+    random: !!getQueryParameter("random")
+    decade: +getQueryParameter("decade") || FIRST_DECADE
+
+  doRenderPage = (data) ->
+    _.extend(data, params)
+    $("body").html(_.template(PAGE_TEMPLATE, data))
+
+    img = document.createElement("img")
+
+    img.onload = ->
+      ccplay.initPaper(PUZZLE_CANVAS_ID)
+      puzzle = new ccplay.Puzzle(img, 4)
+
+      $("#showSolution").bind "mousedown touchstart", ->
+        puzzle.showSolution()
+        $(document).one "mouseup touchend touchcancel", ->
+          puzzle.hideSolution()
+        return false
+
+    img.src = "proxy.php?url=#{data.url}"
+
   dataUrlParts = ["image.php"]
-  dataUrlParts.push($.param(century: century)) if century
+  dataUrlParts.push($.param(decade: params.decade)) unless params.random
   $.getJSON(dataUrlParts.join("?")).done(doRenderPage)
 
 $(document).ready(renderPage)
