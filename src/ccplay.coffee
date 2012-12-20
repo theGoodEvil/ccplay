@@ -33,6 +33,17 @@ PAGE_TEMPLATE = """
 """
 
 
+# Utilities
+
+getQueryParameter = _.memoize (name) ->
+  re = new RegExp("[?&]#{name}=([^&]+)")
+  match = re.exec(window.location.search)
+  if match
+    decodeURIComponent(match[1].replace('+', ' '))
+  else
+    null
+
+
 # Loading code
 
 doRenderPage = (data) ->
@@ -53,6 +64,9 @@ doRenderPage = (data) ->
   img.src = "proxy.php?url=#{data.url}"
 
 renderPage = ->
-  $.getJSON("image.php").done(doRenderPage)
+  century = getQueryParameter("century")
+  dataUrlParts = ["image.php"]
+  dataUrlParts.push($.param(century: century)) if century
+  $.getJSON(dataUrlParts.join("?")).done(doRenderPage)
 
 $(document).ready(renderPage)
