@@ -1,6 +1,29 @@
 "use strict"
 
 
+# Event source
+
+class EventSource
+  constructor: ->
+    @allListeners = {}
+
+  addEventListener: (type, listener) ->
+    listeners = @allListeners[type] ||= []
+    listeners.push(listener)
+    return
+
+  removeEventListener: (type, listener) ->
+    listeners = @allListeners[type]
+    index = listeners?.indexOf(listener) || -1
+    listeners.splice(index, 1) if index >= 0
+    return
+
+  dispatchEvent: (type, evt) ->
+    listeners = @allListeners[type] || []
+    listener(evt) for listener in listeners
+    return
+
+
 # Puzzle code
 
 limitToView = (point) ->
@@ -13,12 +36,14 @@ paper.Raster::placeAt = (gridId) ->
   tileStart = gridId.multiply(@size)
   @position = tileStart.add(@size.divide(2))
 
-class Puzzle
+class Puzzle extends EventSource
   CROP_SIZE = 5
   LABEL_HEIGHT = 22
   LABEL_WIDTH = 400
 
   constructor: (imgId, @numTiles) ->
+    super()
+
     # Init original image
     @img = new Raster(imgId)
     @img.visible = false
@@ -38,7 +63,9 @@ class Puzzle
       .each((gridId, i) => @tiles[i].placeAt(gridId))
 
     # Install event handlers
-    _.extend(new Tool(), @eventHandlers())
+    tool = new Tool()
+    _.extend(tool, @eventHandlers())
+    @addEventListener("finish", -> tool.remove())
 
   showSolution: -> @doShowSolution(true)
   hideSolution: -> @doShowSolution(false)
@@ -134,7 +161,7 @@ class Puzzle
       @tileGroup.addChild(sourceTile)
 
       @drag = null
-      tool.remove() if @finished()
+      @dispatchEvent("finish") if @finished()
 
       return
 
