@@ -25,7 +25,7 @@ PAGE_TEMPLATE = """
       L&ouml;sung
     </li>
     <% _.each(links, function(link) { %>
-      <li>
+      <li class="reward">
         <a href="<%= link %>" target="_blank">Wikipedia</a>
       </li>
     <% }) %>
@@ -33,7 +33,7 @@ PAGE_TEMPLATE = """
       <a href="javascript:document.location.reload();">Neues Bild</a>
     </li>
     <% if (!random) { %>
-      <li>
+      <li class="reward">
         <a href="<%= nextLink %>">N&auml;chstes Jahrzehnt</a>
       </li>
     <% } %>
@@ -54,6 +54,9 @@ getQueryParameter = _.memoize (name) ->
 
 # Loading code
 
+hideReward = -> $(".reward").addClass("hidden")
+showReward = -> $(".reward").removeClass("hidden")
+
 renderPage = ->
   decade = +getQueryParameter("decade") || FIRST_DECADE
   params =
@@ -66,12 +69,14 @@ renderPage = ->
   doRenderPage = (data) ->
     _.extend(data, params)
     $("body").html(_.template(PAGE_TEMPLATE, data))
+    hideReward() unless data.random
 
     img = document.createElement("img")
 
     img.onload = ->
       ccplay.initPaper(PUZZLE_CANVAS_ID)
       puzzle = new ccplay.Puzzle(img, 4)
+      puzzle.addEventListener("finish", showReward)
 
       $("#showSolution").bind "mousedown touchstart", ->
         puzzle.showSolution()

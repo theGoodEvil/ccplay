@@ -1,3 +1,7 @@
 img#puzzleImage {
   display: none;
 }
+
+.hidden {
+  display: none;
+}
