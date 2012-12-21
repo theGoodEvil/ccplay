@@ -67,11 +67,15 @@ class Puzzle extends EventSource
     _.extend(tool, @eventHandlers())
     @addEventListener("finish", -> tool.remove())
 
+  # Show solution
+
   showSolution: -> @doShowSolution(true)
   hideSolution: -> @doShowSolution(false)
   doShowSolution: (showSolution) ->
     @tileGroup.visible = !showSolution
     @img.visible = showSolution
+
+  # Crop original image
 
   shouldCrop: _.once ->
     # Position the image so that pixel indices work as expected
@@ -99,6 +103,8 @@ class Puzzle extends EventSource
   cropOffset: _.once ->
     if @shouldCrop() then new Point(CROP_SIZE, CROP_SIZE) else new Point(0, 0)
 
+  # Grids and tiles
+
   gridIds: _.once ->
     ids = []
     for y in [0...@numTiles]
@@ -119,6 +125,8 @@ class Puzzle extends EventSource
   tileAt: (point) ->
     hit = @tileGroup.hitTest(point)
     hit?.item
+
+  # Game logic
 
   finished: ->
     _.every(@tiles, (tile) => @gridIdAt(tile.position).equals(tile.gridId))
