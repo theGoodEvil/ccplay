@@ -35,7 +35,7 @@ PAGE_TEMPLATE = """
       </li>
       <% if (!random) { %>
         <li class="reward">
-          <a href="<%= nextLink %>">N&auml;chstes Jahrzehnt</a>
+          <a href="<%= nextLink %>">Vorheriges Jahrzehnt</a>
         </li>
       <% } %>
     </ul>
@@ -67,11 +67,11 @@ showPuzzle = -> $("#main").css("opacity", "1")
 renderPage = ->
   showLoading()
 
-  decade = +getQueryParameter("decade") || FIRST_DECADE
+  decade = +getQueryParameter("decade") || LAST_DECADE
   params =
     random: !!getQueryParameter("random")
-    nextLink: if decade < LAST_DECADE
-      "ccplay.html?decade=#{decade + 10}"
+    nextLink: if decade > FIRST_DECADE
+      "ccplay.html?decade=#{decade - 10}"
     else
       "finish.html"
 
