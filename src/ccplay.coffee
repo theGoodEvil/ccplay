@@ -9,7 +9,6 @@ LAST_DECADE = 1990
 PUZZLE_CANVAS_ID = "puzzleCanvas"
 
 PAGE_TEMPLATE = """
-  <img id="loading" class="fade" src="img/loading.gif"></img>
   <div id="main" class="fade" >
     <h1 id="title"><%= year %>: <%= title %></h1>
 
@@ -60,7 +59,14 @@ getQueryParameter = _.memoize (name) ->
 hideReward = -> $(".reward").addClass("hidden")
 showReward = -> $(".reward").removeClass("hidden")
 
+showLoading = -> $("#loading").css("opacity", "1")
+hideLoading = -> $("#loading").css("opacity", "0")
+
+showPuzzle = -> $("#main").css("opacity", "1")
+
 renderPage = ->
+  showLoading()
+
   decade = +getQueryParameter("decade") || FIRST_DECADE
   params =
     random: !!getQueryParameter("random")
@@ -71,7 +77,8 @@ renderPage = ->
 
   doRenderPage = (data) ->
     _.extend(data, params)
-    $("body").html(_.template(PAGE_TEMPLATE, data))
+    $("#container").html(_.template(PAGE_TEMPLATE, data))
+
     hideReward() unless data.random
 
     img = document.createElement("img")
@@ -103,8 +110,8 @@ renderPage = ->
           puzzle.hideSolution()
         return false
 
-      $("#loading").css("opacity", "0")
-      $("#main").css("opacity", "1")
+      hideLoading()
+      showPuzzle()
 
     img.src = "proxy.php?url=#{data.url}"
 

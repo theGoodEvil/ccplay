@@ -4,6 +4,8 @@ html, body {
 }
 
 #loading {
+  opacity: 0;
+
   position: absolute;
   margin: auto;
   left: 0;
