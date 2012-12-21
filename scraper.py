@@ -87,7 +87,7 @@ class WikiLink(Base):
 
     id = Column(Integer, primary_key=True)
     url = Column(String(255))
-    imageid = Column(Integer, ForeignKey('Images.id'), index=True)
+    imageid = Column(Integer, ForeignKey('Images.id', ondelete='CASCADE'), index=True)
 
 
 # IMAGE SCRAPING
