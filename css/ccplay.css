@@ -13,7 +13,7 @@ html, body {
 }
 
 #main {
-  visibility: hidden;
+  opacity: 0;
 
   width: 80%;
   height: 100%;
@@ -22,6 +22,14 @@ html, body {
   margin: auto;
   left: 0;
   right: 0;
+}
+
+.fade {
+  transition: opacity .5s ease-in-out;
+  -moz-transition: opacity .5s ease-in-out;
+  -ms-transition: opacity .5s ease-in-out;
+  -o-transition: opacity .5s ease-in-out;
+  -webkit-transition: opacity .5s ease-in-out;
 }
 
 #puzzleImage {

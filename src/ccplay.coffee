@@ -9,8 +9,8 @@ LAST_DECADE = 1990
 PUZZLE_CANVAS_ID = "puzzleCanvas"
 
 PAGE_TEMPLATE = """
-  <img id="loading" src="img/loading.gif"></img>
-  <div id="main">
+  <img id="loading" class="fade" src="img/loading.gif"></img>
+  <div id="main" class="fade" >
     <h1 id="title"><%= year %>: <%= title %></h1>
 
     <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
@@ -103,8 +103,8 @@ renderPage = ->
           puzzle.hideSolution()
         return false
 
-      $("#loading").css("display", "none")
-      $("#main").css("visibility", "visible")
+      $("#loading").css("opacity", "0")
+      $("#main").css("opacity", "1")
 
     img.src = "proxy.php?url=#{data.url}"
 
