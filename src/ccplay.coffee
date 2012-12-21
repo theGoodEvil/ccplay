@@ -10,11 +10,11 @@ PUZZLE_CANVAS_ID = "puzzleCanvas"
 
 PAGE_TEMPLATE = """
   <div id="main">
-    <h1><%= year %>: <%= title %></h1>
+    <h1 id="title"><%= year %>: <%= title %></h1>
 
     <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
 
-    <div>
+    <div id="license">
       Bildlizenz:
       <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
       / <%= author %> /
@@ -81,8 +81,17 @@ renderPage = ->
       puzzle.addEventListener("finish", showReward)
 
       adjustSize = ->
-        maxWidth = $("#main").width()
-        puzzle.setMaxSize(maxWidth, maxWidth)
+        console.log $("#title").outerHeight(true)
+        maxHeight = window.innerHeight - $("#title").outerHeight(true) - $("#license").outerHeight(true)
+
+        main = $("#main")
+        main.css("max-width", "100%")
+
+        maxWidth = main.width()
+        puzzle.setMaxSize(maxWidth, maxHeight)
+
+        actualWidth = $("##{PUZZLE_CANVAS_ID}").width()
+        main.css("max-width", "#{actualWidth}px")
 
       adjustSize()
       $(window).resize(adjustSize)

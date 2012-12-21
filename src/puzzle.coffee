@@ -139,7 +139,7 @@ class Puzzle extends EventSource
 
   setMaxSize: (maxWidth, maxHeight) ->
     placement = @currentPlacement()
-    @maxSize = new Size(maxWidth, maxHeight)
+    @maxSize = new Size(Math.max(maxWidth, 200), Math.max(maxHeight, 200))
     _.each(@tiles, (tile, i) =>
       tile.bounds = new Rectangle(tile.bounds.point, @tileSize())
       tile.placeAt(placement[i])
