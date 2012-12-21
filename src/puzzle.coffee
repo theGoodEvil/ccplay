@@ -80,7 +80,6 @@ class Puzzle extends EventSource
     # Init original image
     @img = new Raster(imgId)
     @img.visible = false
-    @img.position = @img.size.divide(2).subtract(@cropOffset())
 
     # Init tiles
     @tiles = _.map(@gridIds(), (gridId) => @createTileAt(gridId))
@@ -101,11 +100,12 @@ class Puzzle extends EventSource
 
   # Show solution
 
-  showSolution: -> @doShowSolution(true)
-  hideSolution: -> @doShowSolution(false)
-  doShowSolution: (showSolution) ->
-    @tileGroup.visible = !showSolution
-    @img.visible = showSolution
+  showSolution: ->
+    @lastPlacement = @currentPlacement()
+    _.each(@tiles, (tile) -> tile.placeAt(tile.gridId))
+
+  hideSolution: ->
+    _.each(@tiles, (tile, i) => tile.placeAt(@lastPlacement[i]))
 
   # Crop original image
 
@@ -138,16 +138,14 @@ class Puzzle extends EventSource
   # Size calculations
 
   setMaxSize: (maxWidth, maxHeight) ->
-    placements = _.map(@tiles, (tile) => @gridIdAt(tile.position))
+    placement = @currentPlacement()
     @maxSize = new Size(maxWidth, maxHeight)
     _.each(@tiles, (tile, i) =>
       tile.bounds = new Rectangle(tile.bounds.point, @tileSize())
-      tile.placeAt(placements[i])
+      tile.placeAt(placement[i])
     )
 
-    actualSize = @actualSize()
-    @img.bounds = new Rectangle(@img.bounds.point, actualSize)
-    view.viewSize = actualSize
+    view.viewSize = @actualSize()
 
   actualSize: ->
     @tileSize().multiply([@numTiles, @numTiles])
@@ -186,6 +184,9 @@ class Puzzle extends EventSource
     hit?.item
 
   # Game logic
+
+  currentPlacement: ->
+    _.map(@tiles, (tile) => @gridIdAt(tile.position))
 
   finished: ->
     _.every(@tiles, (tile) => @gridIdAt(tile.position).equals(tile.gridId))
