@@ -29,12 +29,45 @@ class EventSource
 limitToView = (point) ->
   Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
 
-paper.Raster::isLandscape = ->
-  @width >= @height
+paper.Size::scaledToFit = (maxSize) ->
+  xScale = Math.min(1, maxSize.width / @width)
+  yScale = Math.min(1, maxSize.height / @height)
+  return @multiply(Math.min(xScale, yScale))
 
-paper.Raster::placeAt = (gridId) ->
-  tileStart = gridId.multiply(@size)
-  @position = tileStart.add(@size.divide(2))
+paper.Item::isLandscape = ->
+  @bounds.width >= @bounds.height
+
+paper.Item::placeAt = (gridId) ->
+  tileStart = gridId.multiply(@bounds.size)
+  @position = tileStart.add(@bounds.size.divide(2))
+
+Tile = paper.Item.extend
+  initialize: (@img, @cropRect) ->
+    @base()
+    @rect = new Rectangle(@cropRect.size).setCenter(0, 0)
+    return
+
+  _getBounds: (type, matrix) ->
+    if matrix then matrix._transformBounds(@rect) else @rect
+
+  _hitTest: (point) ->
+    if @rect.contains(point)
+      new HitResult('fill', this)
+    else
+      null
+
+  draw: (ctx, param) ->
+    ctx.drawImage(
+      @img.getImage()
+      @cropRect.left
+      @cropRect.top
+      @cropRect.width
+      @cropRect.height
+      @rect.left
+      @rect.top
+      @rect.width
+      @rect.height
+    )
 
 class Puzzle extends EventSource
   CROP_SIZE = 5
@@ -50,12 +83,11 @@ class Puzzle extends EventSource
     @img.position = @img.size.divide(2).subtract(@cropOffset())
 
     # Init tiles
-    @tileSize = @croppedSize().divide(@numTiles * 2).floor().multiply(2)
     @tiles = _.map(@gridIds(), (gridId) => @createTileAt(gridId))
     @tileGroup = new Group(@tiles)
 
     # Init view
-    view.viewSize = @tileSize.multiply([@numTiles, @numTiles])
+    view.viewSize = @actualSize()
 
     # Shuffle tiles
     _.chain(@gridIds())
@@ -103,6 +135,30 @@ class Puzzle extends EventSource
   cropOffset: _.once ->
     if @shouldCrop() then new Point(CROP_SIZE, CROP_SIZE) else new Point(0, 0)
 
+  # Size calculations
+
+  setMaxSize: (maxWidth, maxHeight) ->
+    placements = _.map(@tiles, (tile) => @gridIdAt(tile.position))
+    @maxSize = new Size(maxWidth, maxHeight)
+    _.each(@tiles, (tile, i) =>
+      tile.bounds = new Rectangle(tile.bounds.point, @tileSize())
+      tile.placeAt(placements[i])
+    )
+
+    actualSize = @actualSize()
+    @img.bounds = new Rectangle(@img.bounds.point, actualSize)
+    view.viewSize = actualSize
+
+  actualSize: ->
+    @tileSize().multiply([@numTiles, @numTiles])
+
+  tileSize: ->
+    scaledSize = if @maxSize
+        @croppedSize().scaledToFit(@maxSize)
+      else
+        @croppedSize()
+    scaledSize.divide(@numTiles * 2).floor().multiply(2)
+
   # Grids and tiles
 
   gridIds: _.once ->
@@ -113,13 +169,16 @@ class Puzzle extends EventSource
     return ids
 
   gridIdAt: (point) ->
-    point.divide(@tileSize).floor()
+    point.divide(@tileSize()).floor()
 
   createTileAt: (gridId) ->
-    tileStart = @cropOffset().add(gridId.multiply(@tileSize))
-    tileRect = new Rectangle(tileStart, @tileSize)
-    tile = new Raster(@img.getSubImage(tileRect))
+    tileStart = @cropOffset().add(gridId.multiply(@tileSize()))
+    tileRect = new Rectangle(tileStart, @tileSize())
+
+    tile = new Tile(@img, tileRect)
     tile.gridId = gridId
+    tile.placeAt(gridId)
+
     return tile
 
   tileAt: (point) ->
