@@ -9,35 +9,37 @@ LAST_DECADE = 1990
 PUZZLE_CANVAS_ID = "puzzleCanvas"
 
 PAGE_TEMPLATE = """
-  <h1><%= year %>: <%= title %></h1>
+  <div id="main">
+    <h1><%= year %>: <%= title %></h1>
 
-  <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
-  
-  <div>
-    Bildlizenz:
-    <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
-    / <%= author %> /
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
+    <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
+
+    <div>
+      Bildlizenz:
+      <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
+      / <%= author %> /
+      <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
+    </div>
+
+    <ul>
+      <li id="showSolution">
+        L&ouml;sung
+      </li>
+      <% _.each(links, function(link) { %>
+        <li class="reward">
+          <a href="<%= link %>" target="_blank">Wikipedia</a>
+        </li>
+      <% }) %>
+      <li>
+        <a href="javascript:document.location.reload();">Neues Bild</a>
+      </li>
+      <% if (!random) { %>
+        <li class="reward">
+          <a href="<%= nextLink %>">N&auml;chstes Jahrzehnt</a>
+        </li>
+      <% } %>
+    </ul>
   </div>
-
-  <ul>
-    <li id="showSolution">
-      L&ouml;sung
-    </li>
-    <% _.each(links, function(link) { %>
-      <li class="reward">
-        <a href="<%= link %>" target="_blank">Wikipedia</a>
-      </li>
-    <% }) %>
-    <li>
-      <a href="javascript:document.location.reload();">Neues Bild</a>
-    </li>
-    <% if (!random) { %>
-      <li class="reward">
-        <a href="<%= nextLink %>">N&auml;chstes Jahrzehnt</a>
-      </li>
-    <% } %>
-  </ul>
 """
 
 
@@ -77,6 +79,13 @@ renderPage = ->
       ccplay.initPaper(PUZZLE_CANVAS_ID)
       puzzle = new ccplay.Puzzle(img, 4)
       puzzle.addEventListener("finish", showReward)
+
+      adjustSize = ->
+        maxWidth = $("#main").width()
+        puzzle.setMaxSize(maxWidth, maxWidth)
+
+      adjustSize()
+      $(window).resize(adjustSize)
 
       $("#showSolution").bind "mousedown touchstart", ->
         puzzle.showSolution()

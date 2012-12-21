@@ -1,4 +1,20 @@
-img#puzzleImage {
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#main {
+  width: 80%;
+  max-width: 800px;
+  height: 100%;
+
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+
+#puzzleImage {
   display: none;
 }
 
