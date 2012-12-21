@@ -9,6 +9,7 @@ LAST_DECADE = 1990
 PUZZLE_CANVAS_ID = "puzzleCanvas"
 
 PAGE_TEMPLATE = """
+  <img id="loading" src="img/loading.gif"></img>
   <div id="main">
     <h1 id="title"><%= year %>: <%= title %></h1>
 
@@ -101,6 +102,9 @@ renderPage = ->
         $(document).one "mouseup touchend touchcancel", ->
           puzzle.hideSolution()
         return false
+
+      $("#loading").css("display", "none")
+      $("#main").css("visibility", "visible")
 
     img.src = "proxy.php?url=#{data.url}"
 

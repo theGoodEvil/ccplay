@@ -3,7 +3,18 @@ html, body {
   margin: 0;
 }
 
+#loading {
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
 #main {
+  visibility: hidden;
+
   width: 80%;
   height: 100%;
 
