@@ -30,8 +30,6 @@ showPuzzle = ->$("#main").css("opacity", "1").css("visibility", "visible")
 
 page =
   init: ->
-    showLoading()
-
     @decade = +getQueryParameter("decade") || LAST_DECADE
     @params =
       random: !!getQueryParameter("random")
@@ -83,16 +81,16 @@ page =
         puzzle.hideSolution()
       return false
 
-    hideLoading()
-    showPuzzle()
-
-
-  render: ->
+  renderDeferred: ->
     @init()
     @loadDataDeferred().then (data) =>
       @renderTemplate(_.extend(data, @params))
       @loadImageDeferred("proxy.php?url=#{data.url}")
-    .done (img) =>
+    .then (img) =>
       @initPuzzle(img)
 
-$(document).ready -> page.render()
+$(document).ready ->
+  showLoading()
+  page.renderDeferred().done ->
+    hideLoading()
+    showPuzzle()
