@@ -26,7 +26,7 @@ showReward = -> $(".reward").removeClass("hidden")
 showLoading = -> $("#loading").css("opacity", "1")
 hideLoading = -> $("#loading").css("opacity", "0")
 
-showPuzzle = -> $("#main").css("opacity", "1")
+showPuzzle = ->$("#main").css("opacity", "1").css("visibility", "visible")
 
 page =
   init: ->

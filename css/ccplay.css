@@ -4,8 +4,6 @@ html, body {
 }
 
 #loading {
-  opacity: 0;
-
   position: absolute;
   margin: auto;
   left: 0;
@@ -15,7 +13,7 @@ html, body {
 }
 
 #main {
-  opacity: 0;
+  visibility: hidden;
 
   width: 80%;
   height: 100%;
@@ -27,6 +25,8 @@ html, body {
 }
 
 .fade {
+  opacity: 0;
+
   transition: opacity .5s ease-in-out;
   -moz-transition: opacity .5s ease-in-out;
   -ms-transition: opacity .5s ease-in-out;
