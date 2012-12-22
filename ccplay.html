@@ -10,7 +10,39 @@
   <script type="text/javascript" src="src/ccplay.js"></script>
 </head>
 <body>
+  <script type="text/template" id="mainTemplate">
+    <h1 id="title"><%= year %>: <%= title %></h1>
+
+    <canvas id="puzzleCanvas"></canvas>
+
+    <div id="license">
+      Bildlizenz:
+      <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
+      / <%= author %> /
+      <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
+    </div>
+
+    <ul>
+      <li id="showSolution">
+        L&ouml;sung
+      </li>
+      <% _.each(links, function(link) { %>
+        <li class="reward">
+          <a href="<%= link %>" target="_blank">Wikipedia</a>
+        </li>
+      <% }) %>
+      <li>
+        <a href="javascript:document.location.reload();">Neues Bild</a>
+      </li>
+      <% if (!random) { %>
+        <li class="reward">
+          <a href="<%= nextLink %>">Vorheriges Jahrzehnt</a>
+        </li>
+      <% } %>
+    </ul>
+  </script>
+
   <img id="loading" class="fade" src="img/loading.gif"></img>
-  <div id="container"></div>
+  <div id="main" class="fade"></div>
 </body>
 </html>

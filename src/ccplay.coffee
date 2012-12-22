@@ -6,42 +6,6 @@
 FIRST_DECADE = 1920
 LAST_DECADE = 1990
 
-PUZZLE_CANVAS_ID = "puzzleCanvas"
-
-PAGE_TEMPLATE = """
-  <div id="main" class="fade" >
-    <h1 id="title"><%= year %>: <%= title %></h1>
-
-    <canvas id="#{PUZZLE_CANVAS_ID}"></canvas>
-
-    <div id="license">
-      Bildlizenz:
-      <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
-      / <%= author %> /
-      <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
-    </div>
-
-    <ul>
-      <li id="showSolution">
-        L&ouml;sung
-      </li>
-      <% _.each(links, function(link) { %>
-        <li class="reward">
-          <a href="<%= link %>" target="_blank">Wikipedia</a>
-        </li>
-      <% }) %>
-      <li>
-        <a href="javascript:document.location.reload();">Neues Bild</a>
-      </li>
-      <% if (!random) { %>
-        <li class="reward">
-          <a href="<%= nextLink %>">Vorheriges Jahrzehnt</a>
-        </li>
-      <% } %>
-    </ul>
-  </div>
-"""
-
 
 # Utilities
 
@@ -77,14 +41,15 @@ renderPage = ->
 
   doRenderPage = (data) ->
     _.extend(data, params)
-    $("#container").html(_.template(PAGE_TEMPLATE, data))
+    template = $("#mainTemplate").html()
+    $("#main").html(_.template(template, data))
 
     hideReward() unless data.random
 
     img = document.createElement("img")
 
     img.onload = ->
-      ccplay.initPaper(PUZZLE_CANVAS_ID)
+      ccplay.initPaper("puzzleCanvas")
       puzzle = new ccplay.Puzzle(img, 4)
       puzzle.addEventListener("finish", showReward)
 
@@ -98,7 +63,7 @@ renderPage = ->
         maxWidth = main.width()
         puzzle.setMaxSize(maxWidth, maxHeight)
 
-        actualWidth = $("##{PUZZLE_CANVAS_ID}").width()
+        actualWidth = $("#puzzleCanvas").width()
         main.css("max-width", "#{actualWidth}px")
 
       adjustSize()
