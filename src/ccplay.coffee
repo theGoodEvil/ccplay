@@ -89,9 +89,10 @@ page =
 
   render: ->
     @init()
-    @loadDataDeferred().done (data) =>
+    @loadDataDeferred().then (data) =>
       @renderTemplate(_.extend(data, @params))
-      @loadImageDeferred("proxy.php?url=#{data.url}").done (img) =>
-        @initPuzzle(img)
+      @loadImageDeferred("proxy.php?url=#{data.url}")
+    .done (img) =>
+      @initPuzzle(img)
 
 $(document).ready -> page.render()
