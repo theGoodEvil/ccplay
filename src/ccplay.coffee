@@ -63,7 +63,6 @@ page =
     puzzle.addEventListener("finish", showReward)
 
     adjustSize = ->
-      console.log $("#title").outerHeight(true)
       maxHeight = window.innerHeight - $("#title").outerHeight(true) - $("#license").outerHeight(true)
 
       main = $("#main")
