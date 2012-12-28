@@ -94,11 +94,6 @@ class Puzzle extends EventSource
     # Init view
     view.viewSize = @actualSize()
 
-    # Shuffle tiles
-    _.chain(@gridIds())
-      .shuffle()
-      .each((gridId, i) => @tiles[i].placeAt(gridId))
-
     # Install event handlers
     tool = new Tool()
     _.extend(tool, @eventHandlers())
@@ -166,6 +161,13 @@ class Puzzle extends EventSource
     scaledSize.divide(@numTiles * 2).floor().multiply(2)
 
   # Grids and tiles
+
+  shuffle: ->
+    SOUNDS["shuffle"].play()
+    
+    _.chain(@gridIds())
+      .shuffle()
+      .each((gridId, i) => @tiles[i].placeAt(gridId))
 
   gridIds: _.once ->
     ids = []
