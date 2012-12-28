@@ -26,7 +26,12 @@ showReward = -> $(".reward").removeClass("hidden")
 showLoading = -> $("#loading").css("opacity", "1")
 hideLoading = -> $("#loading").css("opacity", "0")
 
-showPuzzle = ->$("#main").css("opacity", "1").css("visibility", "visible")
+showPuzzle = -> $("#main").css("opacity", "1").css("visibility", "visible")
+
+initButtonSound = ->
+  buttonSound = new buzz.sound("snd/button", formats: ["ogg", "mp3"])
+  playButtonSound = _.bind(buttonSound.play, buttonSound)
+  $(".audibleButton").bind("mousedown touchstart", playButtonSound)
 
 page =
   init: ->
@@ -95,5 +100,6 @@ page =
 $(document).ready ->
   showLoading()
   page.renderDeferred().done ->
+    initButtonSound()
     hideLoading()
     showPuzzle()

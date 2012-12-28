@@ -75,7 +75,6 @@ class Puzzle extends EventSource
   LABEL_WIDTH = 400
 
   SOUNDS =
-    button: new buzz.sound("snd/button", formats: ["ogg", "mp3"])
     complete: new buzz.sound("snd/complete", formats: ["ogg", "mp3"])
     move: new buzz.sound("snd/move", formats: ["ogg", "mp3"])
     shuffle: new buzz.sound("snd/shuffle", formats: ["ogg", "mp3"])
