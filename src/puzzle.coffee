@@ -74,6 +74,12 @@ class Puzzle extends EventSource
   LABEL_HEIGHT = 22
   LABEL_WIDTH = 400
 
+  SOUNDS =
+    button: new buzz.sound("snd/button", formats: ["ogg", "mp3"])
+    complete: new buzz.sound("snd/complete", formats: ["ogg", "mp3"])
+    move: new buzz.sound("snd/move", formats: ["ogg", "mp3"])
+    shuffle: new buzz.sound("snd/shuffle", formats: ["ogg", "mp3"])
+
   constructor: (imgId, @numTiles) ->
     super()
 
@@ -96,7 +102,9 @@ class Puzzle extends EventSource
     # Install event handlers
     tool = new Tool()
     _.extend(tool, @eventHandlers())
-    @addEventListener("finish", -> tool.remove())
+    @addEventListener "finish", ->
+      tool.remove()
+      SOUNDS["complete"].play()
 
   # Show solution
 
@@ -229,7 +237,11 @@ class Puzzle extends EventSource
       @tileGroup.addChild(sourceTile)
 
       @drag = null
-      @dispatchEvent("finish") if @finished()
+
+      if @finished()
+        @dispatchEvent("finish")
+      else
+        SOUNDS["move"].play()
 
       return
 
