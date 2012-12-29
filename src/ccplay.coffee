@@ -51,6 +51,7 @@ page =
     $.Deferred (deferred) =>
       img = document.createElement("img")
       img.onload = -> deferred.resolve(img)
+      img.onerror = -> deferred.reject()
       img.src = srcUrl
 
   initPuzzle: (img) ->
@@ -97,3 +98,5 @@ $(document).ready ->
   page.renderDeferred().done ->
     hideLoading()
     showPuzzle()
+  .fail ->
+    document.location.reload()
