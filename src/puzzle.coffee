@@ -93,12 +93,12 @@ class Puzzle extends EventSource
     # Init view
     view.viewSize = @actualSize()
 
-    # Install event handlers
-    tool = new Tool()
-    _.extend(tool, @eventHandlers())
-    @addEventListener "finish", ->
-      tool.remove()
-      SOUNDS["complete"].play()
+    # Init sounds
+    @addEventListener("finish", -> SOUNDS["complete"].play())
+
+  startGame: ->
+    @installEventHandlers()
+    @shuffle()
 
   # Show solution
 
@@ -199,6 +199,13 @@ class Puzzle extends EventSource
 
   finished: ->
     _.every(@tiles, (tile) => @gridIdAt(tile.position).equals(tile.gridId))
+
+  # Interaction
+
+  installEventHandlers: ->
+    tool = new Tool()
+    _.extend(tool, @eventHandlers())
+    @addEventListener("finish", -> tool.remove())
 
   eventHandlers: _.once ->
     onMouseDown: (evt) =>

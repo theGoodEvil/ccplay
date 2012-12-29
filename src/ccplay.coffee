@@ -60,8 +60,8 @@ page =
     puzzle = new ccplay.Puzzle(img, 4)
     puzzle.addEventListener("finish", showReward)
 
-    shuffle = _.bind(puzzle.shuffle, puzzle)
-    _.delay(shuffle, 2000)
+    startGame = _.bind(puzzle.startGame, puzzle)
+    _.delay(startGame, 2000)
 
     adjustSize = ->
       maxHeight = window.innerHeight - $("#title").outerHeight(true) - $("#license").outerHeight(true)
