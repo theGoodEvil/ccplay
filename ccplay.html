@@ -24,11 +24,11 @@
     </div>
 
     <ul>
-      <li id="showSolution" class="audibleButton">
+      <li id="showSolution">
         L&ouml;sung
       </li>
       <% _.each(links, function(link) { %>
-        <li class="reward audibleButton">
+        <li class="reward">
           <a href="<%= link %>" target="_blank">Wikipedia</a>
         </li>
       <% }) %>
@@ -36,7 +36,7 @@
         <a href="javascript:document.location.reload();">Neues Bild</a>
       </li>
       <% if (!random) { %>
-        <li class="reward audibleButton">
+        <li class="reward">
           <a href="<%= nextLink %>">Vorheriges Jahrzehnt</a>
         </li>
       <% } %>
