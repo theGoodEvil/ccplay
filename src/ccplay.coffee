@@ -39,6 +39,18 @@ page =
     template = $("#mainTemplate").html()
     $("#main").html(_.template(template, data))
 
+  loadArticleDeferred: (link) ->
+    title = _.last(link.split("wiki/"))
+    articleUrl = "proxy.php?url=http://de.wikipedia.org/w/api.php?format=json&action=parse&prop=text&page=#{title}"
+    $.getJSON(articleUrl).then (json) ->
+      return json.parse.text["*"]
+
+  extractTeaser: (article) ->
+    ps = $(article).filter("p")
+    p = ps.eq(0)
+    p = ps.eq(1) if p.has("#coordinates").length > 0
+    return p.text()
+
   loadImageDeferred: (srcUrl) ->
     $.Deferred (deferred) =>
       img = document.createElement("img")
@@ -81,8 +93,10 @@ page =
     @init()
     @loadDataDeferred().then (data) =>
       console.log("image id: #{data.id}")
-      @renderTemplate(data)
-      @loadImageDeferred("proxy.php?url=#{data.url}")
+      @loadArticleDeferred(data.links[0]).then (article) =>
+        teaser = @extractTeaser(article)
+        @renderTemplate(_.extend(data, teaser: teaser))
+        @loadImageDeferred("proxy.php?url=#{data.url}")
     .then (img) =>
       @initPuzzle(img)
 
