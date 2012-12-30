@@ -1,12 +1,6 @@
 "use strict"
 
 
-# Parameters
-
-FIRST_DECADE = 1920
-LAST_DECADE = 1990
-
-
 # Utilities
 
 getQueryParameter = _.memoize (name) ->
@@ -30,17 +24,11 @@ showPuzzle = -> $("#main").css("opacity", "1").css("visibility", "visible")
 
 page =
   init: ->
-    @decade = +getQueryParameter("decade") || LAST_DECADE
-    @params =
-      random: !!getQueryParameter("random")
-      nextLink: if @decade > FIRST_DECADE
-        "ccplay.html?decade=#{@decade - 10}"
-      else
-        "finish.html"
+    @decade = +getQueryParameter("decade")
 
   loadDataDeferred: ->
     dataUrlParts = ["image.php"]
-    dataUrlParts.push($.param(decade: @decade)) unless @params.random
+    dataUrlParts.push($.param(decade: @decade)) if @decade
     $.getJSON(dataUrlParts.join("?"))
 
   renderTemplate: (data) ->
@@ -55,7 +43,7 @@ page =
       img.src = srcUrl
 
   initPuzzle: (img) ->
-    hideReward() unless @params.random
+    hideReward()
 
     ccplay.initPaper("puzzleCanvas")
     puzzle = new ccplay.Puzzle(img, 4)
@@ -88,7 +76,7 @@ page =
   renderDeferred: ->
     @init()
     @loadDataDeferred().then (data) =>
-      @renderTemplate(_.extend(data, @params))
+      @renderTemplate(data)
       @loadImageDeferred("proxy.php?url=#{data.url}")
     .then (img) =>
       @initPuzzle(img)
