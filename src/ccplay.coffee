@@ -25,10 +25,14 @@ showPuzzle = -> $("#main").css("opacity", "1").css("visibility", "visible")
 page =
   init: ->
     @decade = +getQueryParameter("decade")
+    @id = +getQueryParameter("id")
 
   loadDataDeferred: ->
     dataUrlParts = ["image.php"]
-    dataUrlParts.push($.param(decade: @decade)) if @decade
+    if @decade
+      dataUrlParts.push($.param(decade: @decade))
+    else if @id
+      dataUrlParts.push($.param(id: @id))
     $.getJSON(dataUrlParts.join("?"))
 
   renderTemplate: (data) ->
@@ -76,6 +80,7 @@ page =
   renderDeferred: ->
     @init()
     @loadDataDeferred().then (data) =>
+      console.log("image id: #{data.id}")
       @renderTemplate(data)
       @loadImageDeferred("proxy.php?url=#{data.url}")
     .then (img) =>
