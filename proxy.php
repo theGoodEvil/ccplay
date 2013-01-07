@@ -10,9 +10,7 @@ $data = curl_exec($session);
 $info = curl_getinfo($session);
 
 $body = $info["size_download"] ? substr($data, $info["header_size"], $info["size_download"]) : "";
-        
-$headers = substr($data, 0, $info["header_size"]);
-header("Content-Type: " . $headers["image/jpeg"]);
+header("Content-Type: " . $info["content_type"]);
 
 curl_close($session);
 echo $body;
