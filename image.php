@@ -1,12 +1,11 @@
 <?php
 
-/* Configuration */
-define('DATABASE', 'myDatabase');
-define('USERNAME', 'myUsername');
-define('PASSWORD', 'myPassword');
-
 /* Connect to database */
-$pdo = new PDO('mysql:dbname=' . DATABASE, USERNAME, PASSWORD);
+$config = parse_ini_file("config.ini");
+$pdo = new PDO(
+  "mysql:host=" . $config["hostname"] . ";dbname=" . $config["dbname"],
+  $config["username"],
+  $config["password"]);
 $pdo->query('SET NAMES "utf8"');
 
 /* Prepare WHERE statement to filter results */

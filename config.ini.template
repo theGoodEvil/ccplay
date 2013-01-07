@@ -1,0 +1,5 @@
+[database]
+hostname = "localhost"
+dbname = "ccplay"
+username = "username"
+password = "password"
