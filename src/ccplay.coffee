@@ -49,13 +49,18 @@ page =
 
   extractTeaser: (article) ->
     firstParagraph = (article) ->
-      ps = $(article).filter("p")
-      p = ps.eq(0)
-      p = ps.eq(1) if p.has("#coordinates").length > 0
-      return p.text()
+      ps = $(article).filter ->
+        elem = $(this)
+        return elem.is("p") &&
+          elem.has("#coordinates").length == 0 &&
+          elem.has("[style=\"display:none\"]").length == 0
+      return ps.first().text()
     firstSentence = (text) ->
       lastCharBeforePeriod = text.search(/[^0-9]\./g)
-      text.substring(0, lastCharBeforePeriod + 2)
+      if lastCharBeforePeriod == -1
+        text
+      else
+        text.substring(0, lastCharBeforePeriod + 2)
     firstSentence(firstParagraph(article))
 
   loadImageDeferred: (srcUrl) ->
