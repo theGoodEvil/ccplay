@@ -10,7 +10,7 @@ $pdo = new PDO('mysql:dbname=' . DATABASE, USERNAME, PASSWORD);
 $pdo->query('SET NAMES "utf8"');
 
 /* Prepare WHERE statement to filter results */
-$decade = intval($_GET['decade']);
+$decade = array_key_exists('decade', $_GET) ? intval($_GET['decade']) : -1;
 $id = array_key_exists('id', $_GET) ? intval($_GET['id']) : -1;
 $where = '';
 if ($decade > 0 && $decade < 2000) {
