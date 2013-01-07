@@ -55,12 +55,31 @@ page =
           elem.has("#coordinates").length == 0 &&
           elem.has("[style=\"display:none\"]").length == 0
       return ps.first().text()
+
     firstSentence = (text) ->
-      lastCharBeforePeriod = text.search(/[^0-9]\./g)
-      if lastCharBeforePeriod == -1
-        text
-      else
-        text.substring(0, lastCharBeforePeriod + 2)
+      endsOnIgnoredEnding = (stopIndex) ->
+        IGNORED_ENDINGS = [
+          "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+          "m.b.H", "e.V",
+          "bzw", "geb"]
+        _.some(IGNORED_ENDINGS, (e) -> e == text.substr(stopIndex - e.length, e.length))
+
+      done = false
+      stopIndex = 0
+      until done
+        stopIndex = text.indexOf(".", stopIndex)
+        if stopIndex in [-1, text.length - 1]
+          # End of text, or no period at all
+          stopIndex = text.length - 1
+          done = true
+        else if text[stopIndex + 1] != " " or endsOnIgnoredEnding(stopIndex)
+          # Period that is not followed by a space, or preceded by an exception
+          stopIndex += 1
+        else
+          # Period that ends the sentence
+          done = true
+      return text.substr(0, stopIndex + 1)
+
     firstSentence(firstParagraph(article))
 
   loadImageDeferred: (srcUrl) ->
