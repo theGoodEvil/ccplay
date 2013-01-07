@@ -11,6 +11,8 @@ getQueryParameter = _.memoize (name) ->
   else
     null
 
+proxyUrl = (url) ->
+  "proxy.php?url=#{encodeURIComponent(url)}"
 
 # Loading code
 
@@ -41,8 +43,8 @@ page =
 
   loadArticleDeferred: (link) ->
     title = _.last(link.split("wiki/"))
-    articleUrl = "proxy.php?url=http://de.wikipedia.org/w/api.php?format=json&action=parse&prop=text&page=#{title}"
-    $.getJSON(articleUrl).then (json) ->
+    articleUrl = "http://de.wikipedia.org/w/api.php?format=json&action=parse&prop=text&page=#{title}"
+    $.getJSON(proxyUrl(articleUrl)).then (json) ->
       return json.parse.text["*"]
 
   extractTeaser: (article) ->
@@ -96,7 +98,7 @@ page =
       @loadArticleDeferred(data.links[0]).then (article) =>
         teaser = @extractTeaser(article)
         @renderTemplate(_.extend(data, teaser: teaser))
-        @loadImageDeferred("proxy.php?url=#{data.url}")
+        @loadImageDeferred(proxyUrl(data.url))
     .then (img) =>
       @initPuzzle(img)
 
