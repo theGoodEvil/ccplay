@@ -48,10 +48,15 @@ page =
       return json.parse.text["*"]
 
   extractTeaser: (article) ->
-    ps = $(article).filter("p")
-    p = ps.eq(0)
-    p = ps.eq(1) if p.has("#coordinates").length > 0
-    return p.text()
+    firstParagraph = (article) ->
+      ps = $(article).filter("p")
+      p = ps.eq(0)
+      p = ps.eq(1) if p.has("#coordinates").length > 0
+      return p.text()
+    firstSentence = (text) ->
+      lastCharBeforePeriod = text.search(/[^0-9]\./g)
+      text.substring(0, lastCharBeforePeriod + 2)
+    firstSentence(firstParagraph(article))
 
   loadImageDeferred: (srcUrl) ->
     $.Deferred (deferred) =>
