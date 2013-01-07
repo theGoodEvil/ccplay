@@ -80,7 +80,10 @@ page =
           done = true
       return text.substr(0, stopIndex + 1)
 
-    firstSentence(firstParagraph(article))
+    teaser = firstSentence(firstParagraph(article))
+
+    # Strip footnote links
+    return teaser.replace(/\[\d\]/, "")
 
   loadImageDeferred: (srcUrl) ->
     $.Deferred (deferred) =>
