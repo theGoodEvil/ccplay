@@ -27,7 +27,8 @@ class EventSource
 # Puzzle code
 
 limitToView = (point) ->
-  Point.min(view.bounds.size.subtract([1, 1]), Point.max(view.bounds.point, point))
+  bounds = paper.view.bounds
+  paper.Point.min(bounds.size.subtract([1, 1]), paper.Point.max(bounds.point, point))
 
 paper.Size::scaledToFit = (maxSize) ->
   xScale = Math.min(1, maxSize.width / @width)
@@ -44,7 +45,7 @@ paper.Item::placeAt = (gridId) ->
 Tile = paper.Item.extend
   initialize: (@img, @cropRect) ->
     @base()
-    @rect = new Rectangle(@cropRect.size).setCenter(0, 0)
+    @rect = new paper.Rectangle(@cropRect.size).setCenter(0, 0)
     return
 
   _getBounds: (type, matrix) ->
@@ -83,15 +84,15 @@ class Puzzle extends EventSource
     super()
 
     # Init original image
-    @img = new Raster(imgId)
+    @img = new paper.Raster(imgId)
     @img.visible = false
 
     # Init tiles
     @tiles = _.map(@gridIds(), (gridId) => @createTileAt(gridId))
-    @tileGroup = new Group(@tiles)
+    @tileGroup = new paper.Group(@tiles)
 
     # Init view
-    view.viewSize = @actualSize()
+    paper.view.viewSize = @actualSize()
 
     # Init sounds
     @addEventListener("finish", -> SOUNDS["complete"].play())
@@ -117,9 +118,9 @@ class Puzzle extends EventSource
     @img.position = @img.size.divide(2)
 
     labelRect = if @img.isLandscape()
-      new Rectangle(@img.width - LABEL_WIDTH, @img.height - LABEL_HEIGHT, LABEL_WIDTH, LABEL_HEIGHT)
+      new paper.Rectangle(@img.width - LABEL_WIDTH, @img.height - LABEL_HEIGHT, LABEL_WIDTH, LABEL_HEIGHT)
     else
-      new Rectangle(@img.width - LABEL_HEIGHT, 0, LABEL_HEIGHT, LABEL_WIDTH)
+      new paper.Rectangle(@img.width - LABEL_HEIGHT, 0, LABEL_HEIGHT, LABEL_WIDTH)
     color = @img.getAverageColor(labelRect)
 
     @img.position = originalPosition
@@ -135,19 +136,19 @@ class Puzzle extends EventSource
       @img.size
 
   cropOffset: _.once ->
-    if @shouldCrop() then new Point(CROP_SIZE, CROP_SIZE) else new Point(0, 0)
+    if @shouldCrop() then new paper.Point(CROP_SIZE, CROP_SIZE) else new paper.Point(0, 0)
 
   # Size calculations
 
   setMaxSize: (maxWidth, maxHeight) ->
     placement = @currentPlacement()
-    @maxSize = new Size(Math.max(maxWidth, 200), Math.max(maxHeight, 200))
+    @maxSize = new paper.Size(Math.max(maxWidth, 200), Math.max(maxHeight, 200))
     _.each(@tiles, (tile, i) =>
-      tile.bounds = new Rectangle(tile.bounds.point, @tileSize())
+      tile.bounds = new paper.Rectangle(tile.bounds.point, @tileSize())
       tile.placeAt(placement[i])
     )
 
-    view.viewSize = @actualSize()
+    paper.view.viewSize = @actualSize()
 
   actualSize: ->
     @tileSize().multiply([@numTiles, @numTiles])
@@ -172,7 +173,7 @@ class Puzzle extends EventSource
     ids = []
     for y in [0...@numTiles]
       for x in [0...@numTiles]
-        ids.push(new Point(x, y))
+        ids.push(new paper.Point(x, y))
     return ids
 
   gridIdAt: (point) ->
@@ -180,7 +181,7 @@ class Puzzle extends EventSource
 
   createTileAt: (gridId) ->
     tileStart = @cropOffset().add(gridId.multiply(@tileSize()))
-    tileRect = new Rectangle(tileStart, @tileSize())
+    tileRect = new paper.Rectangle(tileStart, @tileSize())
 
     tile = new Tile(@img, tileRect)
     tile.gridId = gridId
@@ -203,7 +204,7 @@ class Puzzle extends EventSource
   # Interaction
 
   installEventHandlers: ->
-    tool = new Tool()
+    tool = new paper.Tool()
     _.extend(tool, @eventHandlers())
     @addEventListener("finish", -> tool.remove())
 
@@ -259,6 +260,5 @@ class Puzzle extends EventSource
 window.ccplay =
   Puzzle: Puzzle
   initPaper: (canvasId) ->
-    paper.install(window)
     paper.setup(document.getElementById(canvasId))
     paper.view.onFrame = -> paper.view.draw()
