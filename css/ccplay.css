@@ -34,10 +34,6 @@ html, body {
   -webkit-transition: opacity .5s ease-in-out;
 }
 
-#puzzleImage {
-  display: none;
-}
-
 .hidden {
   display: none;
 }
