@@ -78,8 +78,10 @@ class Model extends Backbone.Model
   urlRoot: "image.php"
 
   fetch: ->
+    @set("loading", true)
     Backbone.Model::fetch.call(this, silent: true).then =>
       $.when(@fetchTeaser(), @fetchImage()).then =>
+        @set("loading", false)
         @change()
 
   fetchTeaser: ->
@@ -144,11 +146,21 @@ class GroupView extends Backbone.View
     _.invoke(@subviews, "render")
 
 
-class CCPlayView extends GroupView
+class LoadingView extends Backbone.View
   constructor: (options) ->
     super(options)
-    @model = new Model()
+    @listenTo(@model, "change", @render)
 
+  render: ->
+    if @model.get("loading")
+      @$el.css("opacity", "1")
+    else
+      @$el.css("opacity", "0")
+
+
+class MainView extends GroupView
+  constructor: (options) ->
+    super(options)
     @puzzle = new PuzzleView(model: @model, el: $("#puzzle"))
     @addSubview(@puzzle)
 
@@ -161,19 +173,21 @@ class CCPlayView extends GroupView
     @listenTo(@puzzle, "solve", @showReward)
     $(window).on("resize", => @adjustSize())
 
-    @model.fetch()
-
   addTemplateSubview: (name) ->
     @addSubview(new TemplateView(name, model: @model))
 
   render: ->
-    super()
+    if @model.get("loading")
+      @$el.css("opacity", 0)
+    else
+      super()
 
-    @adjustSize()
+      @$el.css("opacity", 1)
+      @adjustSize()
 
-    @delegateEvents
-      "mousedown #showSolution": "showSolution"
-      "touchstart #showSolution": "showSolution"
+      @delegateEvents
+        "mousedown #showSolution": "showSolution"
+        "touchstart #showSolution": "showSolution"
 
   showSolution: ->
     @puzzle.showSolution()
@@ -196,4 +210,10 @@ class CCPlayView extends GroupView
 
 # Go!
 
-$ -> view = new CCPlayView(el: $("#main"))
+$ ->
+  model = new Model()
+
+  loadingView = new LoadingView(el: $("#loading"), model: model)
+  mainView = new MainView(el: $("#main"), model: model)
+
+  model.fetch()
