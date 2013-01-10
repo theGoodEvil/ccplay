@@ -47,7 +47,7 @@ extractTeaser = (article) ->
       IGNORED_ENDINGS = [
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
         "m.b.H", "e.V",
-        "bzw", "geb", "lat", "St"]
+        "bzw", "geb", "lat", "St", "gem"]
       _.some(IGNORED_ENDINGS, (e) -> e == text.substr(stopIndex - e.length, e.length))
 
     done = false
