@@ -76,7 +76,7 @@ class Puzzle extends EventSource
   LABEL_WIDTH = 400
 
   SOUNDS =
-    complete: new buzz.sound("snd/complete", formats: ["ogg", "mp3"])
+    solve: new buzz.sound("snd/solve", formats: ["ogg", "mp3"])
     move: new buzz.sound("snd/move", formats: ["ogg", "mp3"])
     shuffle: new buzz.sound("snd/shuffle", formats: ["ogg", "mp3"])
 
@@ -95,7 +95,7 @@ class Puzzle extends EventSource
     paper.view.viewSize = @actualSize()
 
     # Init sounds
-    @addEventListener("finish", -> SOUNDS["complete"].play())
+    @addEventListener("solve", -> SOUNDS["solve"].play())
 
   startGame: ->
     @installEventHandlers()
@@ -198,7 +198,7 @@ class Puzzle extends EventSource
   currentPlacement: ->
     _.map(@tiles, (tile) => @gridIdAt(tile.position))
 
-  finished: ->
+  solved: ->
     _.every(@tiles, (tile) => @gridIdAt(tile.position).equals(tile.gridId))
 
   # Interaction
@@ -206,7 +206,7 @@ class Puzzle extends EventSource
   installEventHandlers: ->
     tool = new paper.Tool()
     _.extend(tool, @eventHandlers())
-    @addEventListener("finish", -> tool.remove())
+    @addEventListener("solve", -> tool.remove())
 
   eventHandlers: _.once ->
     onMouseDown: (evt) =>
@@ -247,8 +247,8 @@ class Puzzle extends EventSource
 
       @drag = null
 
-      if @finished()
-        @dispatchEvent("finish")
+      if @solved()
+        @dispatchEvent("solve")
       else
         SOUNDS["move"].play()
 

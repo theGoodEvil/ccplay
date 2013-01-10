@@ -116,7 +116,7 @@ class PuzzleView extends Backbone.View
 
   render: ->
     puzzle = new ccplay.Puzzle(@model.get("img"), 4)
-    puzzle.addEventListener("finish", @showReward)
+    puzzle.addEventListener("solve", => @trigger("solve"))
 
     startGame = _.bind(puzzle.startGame, puzzle)
     _.delay(startGame, 2000)
@@ -174,8 +174,12 @@ class CCPlayView extends GroupView
   addTemplateSubview: (name) ->
     @addSubview(new TemplateView(name, model: @model))
 
-  # hideReward: -> $(".reward").addClass("hidden")
-  # showReward: -> $(".reward").removeClass("hidden")
+  render: ->
+    super()
+    @hideReward()
+
+  hideReward: -> $(".reward").addClass("hidden")
+  showReward: -> $(".reward").removeClass("hidden")
 
 
 # Go!
