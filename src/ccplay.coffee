@@ -112,12 +112,9 @@ class TemplateView extends Backbone.View
 
 
 class PuzzleView extends Backbone.View
-  constructor: (options) ->
-    super(options)
-    ccplay.initPaper(@el)
-
   render: ->
-    @puzzle = new ccplay.Puzzle(@model.get("img"), 4)
+    @puzzle?.destroy()
+    @puzzle = new ccplay.Puzzle(@el, @model.get("img"), 4)
     @puzzle.addEventListener("solve", => @trigger("solve"))
 
     startGame = _.bind(@puzzle.startGame, @puzzle)
@@ -188,6 +185,7 @@ class MainView extends GroupView
       @delegateEvents
         "mousedown #showSolution": "showSolution"
         "touchstart #showSolution": "showSolution"
+        "click #newImage": "newImage"
 
   showSolution: ->
     @puzzle.showSolution()
@@ -196,6 +194,9 @@ class MainView extends GroupView
     return false
 
   showReward: -> $(".reward").removeClass("reward")
+
+  newImage: ->
+    @model.fetch()
 
   adjustSize: ->
     maxPuzzleHeight = window.innerHeight - @title.$el.outerHeight(true) - @license.$el.outerHeight(true)

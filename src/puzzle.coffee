@@ -26,10 +26,6 @@ class EventSource
 
 # Puzzle code
 
-limitToView = (point) ->
-  bounds = paper.view.bounds
-  paper.Point.min(bounds.size.subtract([1, 1]), paper.Point.max(bounds.point, point))
-
 paper.Size::scaledToFit = (maxSize) ->
   xScale = Math.min(1, maxSize.width / @width)
   yScale = Math.min(1, maxSize.height / @height)
@@ -75,8 +71,12 @@ class Puzzle extends EventSource
   LABEL_HEIGHT = 22
   LABEL_WIDTH = 400
 
-  constructor: (imgId, @numTiles) ->
+  constructor: (canvas, imgId, @numTiles) ->
     super()
+
+    @scope = new paper.PaperScope()
+    @scope.setup(canvas)
+    @scope.view.onFrame = => @scope.view.draw()
 
     # Init original image
     @img = new paper.Raster(imgId)
@@ -87,7 +87,7 @@ class Puzzle extends EventSource
     @tileGroup = new paper.Group(@tiles)
 
     # Init view
-    paper.view.viewSize = @actualSize()
+    @scope.view.viewSize = @actualSize()
 
     # Init sounds
     @addEventListener("solve", => @playSound("solve"))
@@ -96,6 +96,9 @@ class Puzzle extends EventSource
     @installEventHandlers()
     @shuffle()
     @started = true
+
+  destroy: ->
+    @scope.remove()
 
   # Sounds
 
@@ -158,7 +161,7 @@ class Puzzle extends EventSource
       tile.placeAt(placement[i])
     )
 
-    paper.view.viewSize = @actualSize()
+    @scope.view.viewSize = @actualSize()
 
   actualSize: ->
     @tileSize().multiply([@numTiles, @numTiles])
@@ -215,60 +218,63 @@ class Puzzle extends EventSource
 
   installEventHandlers: ->
     tool = new paper.Tool()
-    _.extend(tool, @eventHandlers())
+    _.bindAll(this, "onMouseDown", "onMouseDrag", "onMouseUp")
+    tool.onMouseDown = @onMouseDown
+    tool.onMouseDrag = @onMouseDrag
+    tool.onMouseUp = @onMouseUp
     @addEventListener("solve", -> tool.remove())
 
-  eventHandlers: _.once ->
-    onMouseDown: (evt) =>
-      tile = @tileAt(evt.point)
+  limitToView: (point) ->
+    bounds = @scope.view.bounds
+    paper.Point.min(bounds.size.subtract([1, 1]), paper.Point.max(bounds.point, point))
 
-      # Take the tile out of the tile group, so that it is
-      # always on top and tiles below it can be picked.
-      tile.remove()
-      paper.project.activeLayer.addChild(tile)
+  onMouseDown: (evt) ->
+    tile = @tileAt(evt.point)
 
-      @drag =
-        tile: tile
-        offset: tile.position.subtract(evt.point)
-        sourceIndex: @gridIdAt(evt.point)
+    # Take the tile out of the tile group, so that it is
+    # always on top and tiles below it can be picked.
+    tile.remove()
+    @scope.project.activeLayer.addChild(tile)
 
-      return
+    @drag =
+      tile: tile
+      offset: tile.position.subtract(evt.point)
+      sourceIndex: @gridIdAt(evt.point)
 
-    onMouseDrag: (evt) =>
-      newPosition = evt.point.add(@drag.offset)
-      @drag.tile.position = limitToView(newPosition)
+    return
 
-      return
+  onMouseDrag: (evt) ->
+    newPosition = evt.point.add(@drag.offset)
+    @drag.tile.position = @limitToView(newPosition)
 
-    onMouseUp: (evt) =>
-      dropPoint = limitToView(evt.point)
+    return
 
-      sourceTile = @drag.tile
-      targetIndex = @gridIdAt(dropPoint)
-      sourceTile.placeAt(targetIndex)
+  onMouseUp: (evt) ->
+    dropPoint = @limitToView(evt.point)
 
-      targetTile = @tileAt(dropPoint)
-      sourceIndex = @drag.sourceIndex
-      targetTile.placeAt(sourceIndex) if targetTile
+    sourceTile = @drag.tile
+    targetIndex = @gridIdAt(dropPoint)
+    sourceTile.placeAt(targetIndex)
 
-      # Put the tile back into the tile group.
-      sourceTile.remove()
-      @tileGroup.addChild(sourceTile)
+    targetTile = @tileAt(dropPoint)
+    sourceIndex = @drag.sourceIndex
+    targetTile.placeAt(sourceIndex) if targetTile
 
-      @drag = null
+    # Put the tile back into the tile group.
+    sourceTile.remove()
+    @tileGroup.addChild(sourceTile)
 
-      if @solved()
-        @dispatchEvent("solve")
-      else
-        @playSound("move")
+    @drag = null
 
-      return
+    if @solved()
+      @dispatchEvent("solve")
+    else
+      @playSound("move")
+
+    return
 
 
 # Loading code
 
 window.ccplay =
   Puzzle: Puzzle
-  initPaper: _.once (canvas) ->
-    paper.setup(canvas)
-    paper.view.onFrame = -> paper.view.draw()
