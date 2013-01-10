@@ -74,7 +74,7 @@ extractTeaser = (article) ->
 
 # Model
 
-Model = Backbone.Model.extend
+class Model extends Backbone.Model
   urlRoot: "image.php"
 
   fetch: ->
@@ -85,21 +85,55 @@ Model = Backbone.Model.extend
       @change()
 
 
-# View
+# Views
 
-View = Backbone.View.extend
-  initialize: ->
-    View::template ||= _.template($("#mainTemplate").html())
+class TemplateView extends Backbone.View
+  @compileTemplate: _.memoize (name) ->
+    templateName = "#{name}Template"
+    templateString = $("##{templateName}").html()
 
-    @model = new Model()
-    @listenTo(@model, 'change', @render)
-    @model.fetch()
+    return _.template(templateString)
 
-    @showLoading()
+  constructor: (name, options) ->
+    super(_.extend(options, el: $("##{name}")))
+    @template = TemplateView.compileTemplate(name)
 
   render: ->
     markup = @template(@model.toJSON())
     @$el.html(markup)
+
+
+class GroupView extends Backbone.View
+  constructor: (options) ->
+    super(options)
+    @subviews = []
+
+  addSubview: (subview) ->
+    @subviews.push(subview)
+
+  render: ->
+    _.invoke(@subviews, "render")
+
+
+class CCPlayView extends GroupView
+  constructor: (options) ->
+    super(options)
+    @model = new Model()
+    @listenTo(@model, "change", @render)
+
+    @addTemplateSubview("title")
+    @addTemplateSubview("license")
+    @addTemplateSubview("teaser")
+    @addTemplateSubview("actions")
+
+    @model.fetch()
+    @showLoading()
+
+  addTemplateSubview: (name) ->
+    @addSubview(new TemplateView(name, model: @model))
+
+  render: ->
+    super()
 
     loadImageDeferred(proxyUrl(@model.get("url"))).done (img) =>
       @initPuzzle(img)
@@ -148,4 +182,4 @@ View = Backbone.View.extend
 
 # Go!
 
-$ -> view = new View(el: $("#main"))
+$ -> view = new CCPlayView(el: $("#main"))

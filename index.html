@@ -12,22 +12,22 @@
   <script type="text/javascript" src="src/ccplay.js"></script>
 </head>
 <body>
-  <script type="text/template" id="mainTemplate">
-    <h1 id="title"><%= year %>: <%= title %></h1>
+  <script type="text/template" id="titleTemplate">
+    <%= year %>: <%= title %>
+  </script>
 
-    <canvas id="puzzleCanvas"></canvas>
+  <script type="text/template" id="licenseTemplate">
+    Bildlizenz:
+    <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
+    / <%= author %> /
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
+  </script>
 
-    <div id="license">
-      Bildlizenz:
-      <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search[form][SIGNATUR]=<% print(archiveid.replace(' ', '+')) %>">Bundesarchiv, <%= archiveid %></a>
-      / <%= author %> /
-      <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
-    </div>
+  <script type="text/template" id="teaserTemplate">
+    <%= teaser %>
+  </script>
 
-    <div id="teaser">
-      <%= teaser %>
-    </div>
-
+  <script type="text/template" id="actionsTemplate">
     <ul>
       <li id="showSolution">
         L&ouml;sung
@@ -44,6 +44,13 @@
   </script>
 
   <img id="loading" class="fade" src="img/loading.gif"></img>
-  <div id="main" class="fade"></div>
+
+  <div id="main" class="fade">
+    <h1 id="title"></h1>
+    <canvas id="puzzleCanvas"></canvas>
+    <div id="license"></div>
+    <div id="teaser"></div>
+    <div id="actions"></div>
+  </div>
 </body>
 </html>
