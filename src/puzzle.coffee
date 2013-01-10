@@ -75,11 +75,6 @@ class Puzzle extends EventSource
   LABEL_HEIGHT = 22
   LABEL_WIDTH = 400
 
-  SOUNDS =
-    solve: new buzz.sound("snd/solve", formats: ["ogg", "mp3"])
-    move: new buzz.sound("snd/move", formats: ["ogg", "mp3"])
-    shuffle: new buzz.sound("snd/shuffle", formats: ["ogg", "mp3"])
-
   constructor: (imgId, @numTiles) ->
     super()
 
@@ -95,12 +90,23 @@ class Puzzle extends EventSource
     paper.view.viewSize = @actualSize()
 
     # Init sounds
-    @addEventListener("solve", -> SOUNDS["solve"].play())
+    @addEventListener("solve", => @playSound("solve"))
 
   startGame: ->
     @installEventHandlers()
     @shuffle()
     @started = true
+
+  # Sounds
+
+  SOUNDS =
+    solve: new buzz.sound("snd/solve", formats: ["ogg", "mp3"])
+    move: new buzz.sound("snd/move", formats: ["ogg", "mp3"])
+    shuffle: new buzz.sound("snd/shuffle", formats: ["ogg", "mp3"])
+
+  playSound: (name) ->
+    SOUNDS[name].load() # Must be loaded again to play more than once in WebKit
+    SOUNDS[name].play()
 
   # Show solution
 
@@ -167,7 +173,7 @@ class Puzzle extends EventSource
   # Grids and tiles
 
   shuffle: ->
-    SOUNDS["shuffle"].play()
+    @playSound("shuffle")
     
     _.chain(@gridIds())
       .shuffle()
@@ -254,7 +260,7 @@ class Puzzle extends EventSource
       if @solved()
         @dispatchEvent("solve")
       else
-        SOUNDS["move"].play()
+        @playSound("move")
 
       return
 
