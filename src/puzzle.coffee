@@ -259,6 +259,6 @@ class Puzzle extends EventSource
 
 window.ccplay =
   Puzzle: Puzzle
-  initPaper: (canvasId) ->
+  initPaper: _.once (canvasId) ->
     paper.setup(document.getElementById(canvasId))
     paper.view.onFrame = -> paper.view.draw()

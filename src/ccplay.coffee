@@ -79,10 +79,16 @@ class Model extends Backbone.Model
 
   fetch: ->
     Backbone.Model::fetch.call(this, silent: true).then =>
-      loadWikipediaArticleDeferred(@get("links")[0])
-    .then (article) =>
+      $.when(@fetchTeaser(), @fetchImage()).then =>
+        @change()
+
+  fetchTeaser: ->
+    loadWikipediaArticleDeferred(@get("links")[0]).then (article) =>
       @set("teaser", extractTeaser(article), silent: true)
-      @change()
+
+  fetchImage: ->
+    loadImageDeferred(proxyUrl(@get("url"))).then (img) =>
+      @set("img", img, silent: true)
 
 
 # Views
@@ -103,56 +109,13 @@ class TemplateView extends Backbone.View
     @$el.html(markup)
 
 
-class GroupView extends Backbone.View
+class PuzzleView extends Backbone.View
   constructor: (options) ->
     super(options)
-    @subviews = []
-
-  addSubview: (subview) ->
-    @subviews.push(subview)
-
-  render: ->
-    _.invoke(@subviews, "render")
-
-
-class CCPlayView extends GroupView
-  constructor: (options) ->
-    super(options)
-    @model = new Model()
-    @listenTo(@model, "change", @render)
-
-    @addTemplateSubview("title")
-    @addTemplateSubview("license")
-    @addTemplateSubview("teaser")
-    @addTemplateSubview("actions")
-
-    @model.fetch()
-    @showLoading()
-
-  addTemplateSubview: (name) ->
-    @addSubview(new TemplateView(name, model: @model))
-
-  render: ->
-    super()
-
-    loadImageDeferred(proxyUrl(@model.get("url"))).done (img) =>
-      @initPuzzle(img)
-      @hideLoading()
-      @showPuzzle()
-
-  showLoading: -> $("#loading").css("opacity", "1")
-  hideLoading: -> $("#loading").css("opacity", "0")
-
-  hideReward: -> $(".reward").addClass("hidden")
-  showReward: -> $(".reward").removeClass("hidden")
-
-  showPuzzle: -> $("#main").css("opacity", "1").css("visibility", "visible")
-
-  initPuzzle: (img) ->
-    @hideReward()
-
     ccplay.initPaper("puzzleCanvas")
-    puzzle = new ccplay.Puzzle(img, 4)
+
+  render: ->
+    puzzle = new ccplay.Puzzle(@model.get("img"), 4)
     puzzle.addEventListener("finish", @showReward)
 
     startGame = _.bind(puzzle.startGame, puzzle)
@@ -178,6 +141,41 @@ class CCPlayView extends GroupView
       $(document).one "mouseup touchend touchcancel", ->
         puzzle.hideSolution()
       return false
+
+
+class GroupView extends Backbone.View
+  constructor: (options) ->
+    super(options)
+    @subviews = []
+
+  addSubview: (subview) ->
+    @subviews.push(subview)
+
+  render: ->
+    _.invoke(@subviews, "render")
+
+
+class CCPlayView extends GroupView
+  constructor: (options) ->
+    super(options)
+    @model = new Model()
+    @listenTo(@model, "change", @render)
+
+    @puzzleView = new PuzzleView(model: @model)
+    @addSubview(@puzzleView)
+
+    @addTemplateSubview("title")
+    @addTemplateSubview("license")
+    @addTemplateSubview("teaser")
+    @addTemplateSubview("actions")
+
+    @model.fetch()
+
+  addTemplateSubview: (name) ->
+    @addSubview(new TemplateView(name, model: @model))
+
+  # hideReward: -> $(".reward").addClass("hidden")
+  # showReward: -> $(".reward").removeClass("hidden")
 
 
 # Go!
