@@ -124,11 +124,11 @@ class PuzzleView extends Backbone.View
   setMaxSize: (maxWidth, maxHeight) ->
     @puzzle?.setMaxSize(maxWidth, maxHeight)
 
-    # $("#showSolution").bind "mousedown touchstart", ->
-    #   puzzle.showSolution()
-    #   $(document).one "mouseup touchend touchcancel", ->
-    #     puzzle.hideSolution()
-    #   return false
+  showSolution: ->
+    @puzzle?.showSolution()
+
+  hideSolution: ->
+    @puzzle?.hideSolution()
 
 
 class GroupView extends Backbone.View
@@ -168,6 +168,16 @@ class CCPlayView extends GroupView
     super()
     @hideReward()
     @adjustSize()
+
+    @delegateEvents
+      "mousedown #showSolution": "showSolution"
+      "touchstart #showSolution": "showSolution"
+
+  showSolution: ->
+    @puzzle.showSolution()
+    $(document).one "mouseup touchend touchcancel", =>
+      @puzzle.hideSolution()
+    return false
 
   adjustSize: ->
     maxPuzzleHeight = window.innerHeight - @title.$el.outerHeight(true) - @license.$el.outerHeight(true)

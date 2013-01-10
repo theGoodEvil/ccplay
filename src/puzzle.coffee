@@ -100,15 +100,19 @@ class Puzzle extends EventSource
   startGame: ->
     @installEventHandlers()
     @shuffle()
+    @started = true
 
   # Show solution
 
   showSolution: ->
-    @lastPlacement = @currentPlacement()
-    _.each(@tiles, (tile) -> tile.placeAt(tile.gridId))
+    if @started
+      @lastPlacement = @currentPlacement()
+      _.each(@tiles, (tile) -> tile.placeAt(tile.gridId))
 
   hideSolution: ->
-    _.each(@tiles, (tile, i) => tile.placeAt(@lastPlacement[i]))
+    if @started and @lastPlacement
+      _.each(@tiles, (tile, i) => tile.placeAt(@lastPlacement[i]))
+      delete @lastPlacement
 
   # Crop original image
 
