@@ -148,8 +148,6 @@ class CCPlayView extends GroupView
   constructor: (options) ->
     super(options)
     @model = new Model()
-    @listenTo(@model, "change", @render)
-    $(window).on("resize", => @adjustSize())
 
     @puzzle = new PuzzleView(model: @model, el: $("#puzzle"))
     @addSubview(@puzzle)
@@ -159,6 +157,10 @@ class CCPlayView extends GroupView
     @teaser = @addTemplateSubview("teaser")
     @actions = @addTemplateSubview("actions")
 
+    @listenTo(@model, "change", @render)
+    @listenTo(@puzzle, "solve", @showReward)
+    $(window).on("resize", => @adjustSize())
+
     @model.fetch()
 
   addTemplateSubview: (name) ->
@@ -166,7 +168,7 @@ class CCPlayView extends GroupView
 
   render: ->
     super()
-    @hideReward()
+
     @adjustSize()
 
     @delegateEvents
@@ -179,6 +181,8 @@ class CCPlayView extends GroupView
       @puzzle.hideSolution()
     return false
 
+  showReward: -> $(".reward").removeClass("reward")
+
   adjustSize: ->
     maxPuzzleHeight = window.innerHeight - @title.$el.outerHeight(true) - @license.$el.outerHeight(true)
     @$el.css("max-width", "100%")
@@ -188,9 +192,6 @@ class CCPlayView extends GroupView
 
     actualPuzzleWidth = @puzzle.$el.width()
     @$el.css("max-width", "#{actualPuzzleWidth}px")
-
-  hideReward: -> $(".reward").addClass("hidden")
-  showReward: -> $(".reward").removeClass("hidden")
 
 
 # Go!

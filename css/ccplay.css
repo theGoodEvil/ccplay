@@ -32,6 +32,6 @@ html, body {
   -webkit-transition: opacity .5s ease-in-out;
 }
 
-.hidden {
+.reward {
   display: none;
 }
