@@ -112,35 +112,23 @@ class TemplateView extends Backbone.View
 class PuzzleView extends Backbone.View
   constructor: (options) ->
     super(options)
-    ccplay.initPaper("puzzleCanvas")
+    ccplay.initPaper(@el)
 
   render: ->
-    puzzle = new ccplay.Puzzle(@model.get("img"), 4)
-    puzzle.addEventListener("solve", => @trigger("solve"))
+    @puzzle = new ccplay.Puzzle(@model.get("img"), 4)
+    @puzzle.addEventListener("solve", => @trigger("solve"))
 
-    startGame = _.bind(puzzle.startGame, puzzle)
+    startGame = _.bind(@puzzle.startGame, @puzzle)
     _.delay(startGame, 2000)
 
-    adjustSize = ->
-      maxHeight = window.innerHeight - $("#title").outerHeight(true) - $("#license").outerHeight(true)
+  setMaxSize: (maxWidth, maxHeight) ->
+    @puzzle?.setMaxSize(maxWidth, maxHeight)
 
-      main = $("#main")
-      main.css("max-width", "100%")
-
-      maxWidth = main.width()
-      puzzle.setMaxSize(maxWidth, maxHeight)
-
-      actualWidth = $("#puzzleCanvas").width()
-      main.css("max-width", "#{actualWidth}px")
-
-    adjustSize()
-    $(window).resize(adjustSize)
-
-    $("#showSolution").bind "mousedown touchstart", ->
-      puzzle.showSolution()
-      $(document).one "mouseup touchend touchcancel", ->
-        puzzle.hideSolution()
-      return false
+    # $("#showSolution").bind "mousedown touchstart", ->
+    #   puzzle.showSolution()
+    #   $(document).one "mouseup touchend touchcancel", ->
+    #     puzzle.hideSolution()
+    #   return false
 
 
 class GroupView extends Backbone.View
@@ -150,6 +138,7 @@ class GroupView extends Backbone.View
 
   addSubview: (subview) ->
     @subviews.push(subview)
+    return subview
 
   render: ->
     _.invoke(@subviews, "render")
@@ -160,14 +149,15 @@ class CCPlayView extends GroupView
     super(options)
     @model = new Model()
     @listenTo(@model, "change", @render)
+    $(window).on("resize", => @adjustSize())
 
-    @puzzleView = new PuzzleView(model: @model)
-    @addSubview(@puzzleView)
+    @puzzle = new PuzzleView(model: @model, el: $("#puzzle"))
+    @addSubview(@puzzle)
 
-    @addTemplateSubview("title")
-    @addTemplateSubview("license")
-    @addTemplateSubview("teaser")
-    @addTemplateSubview("actions")
+    @title = @addTemplateSubview("title")
+    @license = @addTemplateSubview("license")
+    @teaser = @addTemplateSubview("teaser")
+    @actions = @addTemplateSubview("actions")
 
     @model.fetch()
 
@@ -177,6 +167,17 @@ class CCPlayView extends GroupView
   render: ->
     super()
     @hideReward()
+    @adjustSize()
+
+  adjustSize: ->
+    maxPuzzleHeight = window.innerHeight - @title.$el.outerHeight(true) - @license.$el.outerHeight(true)
+    @$el.css("max-width", "100%")
+
+    maxPuzzleWidth = @$el.width()
+    @puzzle.setMaxSize(maxPuzzleWidth, maxPuzzleHeight)
+
+    actualPuzzleWidth = @puzzle.$el.width()
+    @$el.css("max-width", "#{actualPuzzleWidth}px")
 
   hideReward: -> $(".reward").addClass("hidden")
   showReward: -> $(".reward").removeClass("hidden")
