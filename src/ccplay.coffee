@@ -76,7 +76,19 @@ extractTeaser = (article) ->
 
 # Model
 
-class Model extends Backbone.Model
+class DecadeModel extends Backbone.Model
+  defaults:
+    unlocked: false
+
+
+class Timeline extends Backbone.Collection
+  constructor: (firstDecade, lastDecade) ->
+    super()
+    decades = (new DecadeModel(id: decade) for decade in [firstDecade..lastDecade] by 10)
+    @reset(decades)
+
+
+class MainModel extends Backbone.Model
   urlRoot: "image.php"
 
   queryParam: (prop) ->
@@ -120,6 +132,36 @@ class TemplateView extends Backbone.View
     @$el.html(markup)
 
 
+class GroupView extends Backbone.View
+  constructor: (options) ->
+    super(options)
+    @subviews = []
+
+  addSubview: (subview, options = {}) ->
+    @subviews.push(subview)
+    @$el.append(subview.el) if options.append
+    return subview
+
+  render: ->
+    _.invoke(@subviews, "render")
+
+
+class DecadeView extends Backbone.View
+  tagName: "span"
+  className: "decade"
+
+  render: ->
+    @$el.text("#{@model.get("id")}")
+    @$el.toggleClass("unlocked", @model.get("unlocked"))
+
+
+class TimelineView extends GroupView
+  constructor: (options) ->
+    super(options)
+    @model.each (decade) =>
+      @addSubview(new DecadeView(model: decade), append: true)
+
+
 class PuzzleView extends Backbone.View
   render: ->
     @puzzle?.destroy()
@@ -137,19 +179,6 @@ class PuzzleView extends Backbone.View
 
   hideSolution: ->
     @puzzle?.hideSolution()
-
-
-class GroupView extends Backbone.View
-  constructor: (options) ->
-    super(options)
-    @subviews = []
-
-  addSubview: (subview) ->
-    @subviews.push(subview)
-    return subview
-
-  render: ->
-    _.invoke(@subviews, "render")
 
 
 class LoadingView extends Backbone.View
@@ -209,7 +238,10 @@ class MainView extends GroupView
     @model.fetch()
 
   adjustSize: ->
-    maxPuzzleHeight = window.innerHeight - @title.$el.outerHeight(true) - @license.$el.outerHeight(true)
+    maxPuzzleHeight = window.innerHeight -
+                      @title.$el.outerHeight(true) -
+                      @license.$el.outerHeight(true) -
+                      @teaser.$el.outerHeight(true)
     @$el.css("max-width", "100%")
 
     maxPuzzleWidth = @$el.width()
@@ -222,8 +254,11 @@ class MainView extends GroupView
 # Go!
 
 $ ->
-  model = new Model()
+  timeline = new Timeline(1920, 1990)
+  timelineView = new TimelineView(el: $("#timeline"), model: timeline)
+  timelineView.render()
 
+  model = new MainModel()
   loadingView = new LoadingView(el: $("#loading"), model: model)
   mainView = new MainView(el: $("#main"), model: model)
 
