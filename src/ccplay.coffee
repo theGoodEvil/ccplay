@@ -95,8 +95,8 @@ class MainModel extends Backbone.Model
     "#{prop}=#{@get(prop)}" if @get(prop)?
 
   url: ->
-    idParam = @queryParam("id")
-    _.compact([@urlRoot, idParam]).join("?")
+    param = @queryParam("id") or @queryParam("decade")
+    _.compact([@urlRoot, param]).join("?")
 
   fetch: ->
     @set("loading", true)
@@ -149,6 +149,13 @@ class GroupView extends Backbone.View
 class DecadeView extends Backbone.View
   tagName: "span"
   className: "decade"
+
+  events:
+    "click": "onClick"
+
+  onClick: ->
+    if @model.get("unlocked")
+      app.navigate("decade/#{@model.get("id")}", trigger: true)
 
   render: ->
     @$el.text("#{@model.get("id")}")
@@ -223,7 +230,6 @@ class MainView extends GroupView
       @delegateEvents
         "mousedown #showSolution": "showSolution"
         "touchstart #showSolution": "showSolution"
-        "click #newImage": "newImage"
 
   showSolution: ->
     @puzzle.showSolution()
@@ -232,10 +238,6 @@ class MainView extends GroupView
     return false
 
   showReward: -> $(".reward").removeClass("reward")
-
-  newImage: ->
-    @model.clear(silent: true)
-    @model.fetch()
 
   adjustSize: ->
     maxPuzzleHeight = window.innerHeight -
@@ -251,15 +253,48 @@ class MainView extends GroupView
     @$el.css("max-width", "#{actualPuzzleWidth}px")
 
 
+# App
+
+class App extends Backbone.Router
+  routes:
+    "decade/:decade": "decadeRoute"
+    "image/(:id)": "imageRoute"
+    "*path": "defaultRoute"
+
+  constructor: ->
+    super()
+
+    timeline = new Timeline(1920, 1990)
+    timelineView = new TimelineView(el: $("#timeline"), model: timeline)
+    timelineView.render()
+
+    @model = new MainModel()
+    loadingView = new LoadingView(el: $("#loading"), model: @model)
+    mainView = new MainView(el: $("#main"), model: @model)
+
+    @model.on "change:id", (model, id) =>
+      @navigate("image/#{id}", replace: true) if id?
+
+  newImage: (options) ->
+    @model.clear(silent: true)
+    @model.set(options, silent: true)
+    @model.fetch()
+
+  decadeRoute: (decade) ->
+    @newImage(decade: decade)
+
+  imageRoute: (id) ->
+    options = if id then {id: id} else {}
+    @newImage(options)
+
+  defaultRoute: ->
+    @navigate("image/", trigger: true)
+
+
 # Go!
 
+app = null
+
 $ ->
-  timeline = new Timeline(1920, 1990)
-  timelineView = new TimelineView(el: $("#timeline"), model: timeline)
-  timelineView.render()
-
-  model = new MainModel()
-  loadingView = new LoadingView(el: $("#loading"), model: model)
-  mainView = new MainView(el: $("#main"), model: model)
-
-  model.fetch()
+  app = new App()
+  Backbone.history.start()
