@@ -111,9 +111,9 @@ class Puzzle extends EventSource
   # Sounds
 
   SOUNDS =
-    solve: new buzz.sound("snd/solve", formats: ["ogg", "mp3"])
-    move: new buzz.sound("snd/move", formats: ["ogg", "mp3"])
-    shuffle: new buzz.sound("snd/shuffle", formats: ["ogg", "mp3"])
+    solve: new buzz.sound("snd/solve", formats: ["ogg", "mp3"], preload: true)
+    move: new buzz.sound("snd/move", formats: ["ogg", "mp3"], preload: true)
+    shuffle: new buzz.sound("snd/shuffle", formats: ["ogg", "mp3"], preload: true)
 
   playSound: (name) ->
     SOUNDS[name].load() # Must be loaded again to play more than once in WebKit
