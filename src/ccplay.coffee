@@ -77,6 +77,13 @@ extractTeaser = (article) ->
 class Model extends Backbone.Model
   urlRoot: "image.php"
 
+  queryParam: (prop) ->
+    "#{prop}=#{@get(prop)}" if @get(prop)?
+
+  url: ->
+    idParam = @queryParam("id")
+    _.compact([@urlRoot, idParam]).join("?")
+
   fetch: ->
     @set("loading", true)
     Backbone.Model::fetch.call(this, silent: true).then =>
@@ -196,6 +203,7 @@ class MainView extends GroupView
   showReward: -> $(".reward").removeClass("reward")
 
   newImage: ->
+    @model.clear(silent: true)
     @model.fetch()
 
   adjustSize: ->
