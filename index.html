@@ -12,6 +12,14 @@
   <script type="text/javascript" src="src/ccplay.js"></script>
 </head>
 <body>
+  <script type="text/template" id="decadeTemplate">
+    <% if (unlocked) { %>
+      <a href="#decade/<%= id %>"><%= id %></a>
+    <% } else { %>
+      <%= id %>
+    <% } %>
+  </script>
+
   <script type="text/template" id="titleTemplate">
     <%= year %>: <%= title %>
   </script>

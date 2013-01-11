@@ -124,7 +124,7 @@ class TemplateView extends Backbone.View
     return _.template(templateString)
 
   constructor: (name, options) ->
-    super(_.extend(options, el: $("##{name}")))
+    super(options)
     @template = TemplateView.compileTemplate(name)
 
   render: ->
@@ -146,20 +146,12 @@ class GroupView extends Backbone.View
     _.invoke(@subviews, "render")
 
 
-class DecadeView extends Backbone.View
+class DecadeView extends TemplateView
   tagName: "span"
   className: "decade"
 
-  events:
-    "click": "onClick"
-
-  onClick: ->
-    if @model.get("unlocked")
-      app.navigate("decade/#{@model.get("id")}", trigger: true)
-
-  render: ->
-    @$el.text("#{@model.get("id")}")
-    @$el.toggleClass("unlocked", @model.get("unlocked"))
+  constructor: (options) ->
+    super("decade", options)
 
 
 class TimelineView extends GroupView
@@ -216,7 +208,7 @@ class MainView extends GroupView
     $(window).on("resize", => @adjustSize())
 
   addTemplateSubview: (name) ->
-    @addSubview(new TemplateView(name, model: @model))
+    @addSubview(new TemplateView(name, el: $("##{name}"), model: @model))
 
   render: ->
     if @model.get("loading")

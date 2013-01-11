@@ -22,16 +22,8 @@ html, body {
   right: 0;
 }
 
-.decade {
-  color: red;
-}
-
 .decade:after {
   content: " ";
-}
-
-.decade .unlocked {
-  color: green;
 }
 
 .fade {
