@@ -285,8 +285,6 @@ class App extends Backbone.Router
 
 # Go!
 
-app = null
-
 $ ->
   app = new App()
   Backbone.history.start()
