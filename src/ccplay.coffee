@@ -87,6 +87,10 @@ class Timeline extends Backbone.Collection
     decades = (new DecadeModel(id: decade) for decade in [firstDecade..lastDecade] by 10)
     @reset(decades)
 
+  unlock: (year) ->
+    decade = Math.floor(year / 10) * 10
+    @get(decade).set("unlocked", true)
+
 
 class MainModel extends Backbone.Model
   urlRoot: "image.php"
@@ -152,6 +156,7 @@ class DecadeView extends TemplateView
 
   constructor: (options) ->
     super("decade", options)
+    @listenTo(@model, "change", @render)
 
 
 class TimelineView extends GroupView
@@ -165,7 +170,7 @@ class PuzzleView extends Backbone.View
   render: ->
     @puzzle?.destroy()
     @puzzle = new ccplay.Puzzle(@el, @model.get("img"), 4)
-    @puzzle.addEventListener("solve", => @trigger("solve"))
+    @puzzle.addEventListener("solve", => @model.set("solved", true))
 
     startGame = _.bind(@puzzle.startGame, @puzzle)
     _.delay(startGame, 2000)
@@ -204,7 +209,6 @@ class MainView extends GroupView
     @actions = @addTemplateSubview("actions")
 
     @listenTo(@model, "change", @render)
-    @listenTo(@puzzle, "solve", @showReward)
     $(window).on("resize", => @adjustSize())
 
   addTemplateSubview: (name) ->
@@ -213,6 +217,8 @@ class MainView extends GroupView
   render: ->
     if @model.get("loading")
       @$el.css("opacity", 0)
+    else if @model.get("solved")
+      $(".reward").removeClass("reward")
     else
       super()
 
@@ -228,8 +234,6 @@ class MainView extends GroupView
     $(document).one "mouseup touchend touchcancel", =>
       @puzzle.hideSolution()
     return false
-
-  showReward: -> $(".reward").removeClass("reward")
 
   adjustSize: ->
     maxPuzzleHeight = window.innerHeight -
@@ -266,6 +270,9 @@ class App extends Backbone.Router
 
     @model.on "change:id", (model, id) =>
       @navigate("image/#{id}", replace: true) if id?
+
+    @model.on "change:solved", (model, solved) ->
+      timeline.unlock(model.get("year")) if solved
 
   newImage: (options) ->
     @model.clear(silent: true)
