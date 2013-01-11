@@ -38,8 +38,9 @@ paper.Item::placeAt = (gridId) ->
   tileStart = gridId.multiply(@bounds.size)
   @position = tileStart.add(@bounds.size.divide(2))
 
+
 Tile = paper.Item.extend
-  initialize: (@img, @cropRect) ->
+  initialize: (@raster, @cropRect) ->
     @base()
     @rect = new paper.Rectangle(@cropRect.size).setCenter(0, 0)
     return
@@ -55,7 +56,7 @@ Tile = paper.Item.extend
 
   draw: (ctx, param) ->
     ctx.drawImage(
-      @img.getImage()
+      @raster.getImage()
       @cropRect.left
       @cropRect.top
       @cropRect.width
@@ -66,12 +67,13 @@ Tile = paper.Item.extend
       @rect.height
     )
 
+
 class Puzzle extends EventSource
   CROP_SIZE = 5
   LABEL_HEIGHT = 22
   LABEL_WIDTH = 400
 
-  constructor: (canvas, imgId, @numTiles) ->
+  constructor: (canvas, img, @numTiles) ->
     super()
 
     @scope = new paper.PaperScope()
@@ -79,11 +81,17 @@ class Puzzle extends EventSource
     @scope.view.onFrame = => @scope.view.draw()
 
     # Init original image
-    @img = new paper.Raster(imgId)
-    @img.visible = false
+    @raster = new paper.Raster(img)
+    @raster.visible = false
+
+    # Init cropping
+    crop = @shouldCrop()
+    @croppedSize = @computeCroppedSize(crop)
+    cropOffset = @computeCropOffset(crop)
 
     # Init tiles
-    @tiles = _.map(@gridIds(), (gridId) => @createTileAt(gridId))
+    @gridIds = @computeGridIds()
+    @tiles = _.map(@gridIds, (gridId) => @createTileAt(gridId, cropOffset))
     @tileGroup = new paper.Group(@tiles)
 
     # Init view
@@ -125,31 +133,31 @@ class Puzzle extends EventSource
 
   # Crop original image
 
-  shouldCrop: _.once ->
+  shouldCrop: ->
     # Position the image so that pixel indices work as expected
-    originalPosition = @img.position
-    @img.position = @img.size.divide(2)
+    originalPosition = @raster.position
+    @raster.position = @raster.size.divide(2)
 
-    labelRect = if @img.isLandscape()
-      new paper.Rectangle(@img.width - LABEL_WIDTH, @img.height - LABEL_HEIGHT, LABEL_WIDTH, LABEL_HEIGHT)
+    labelRect = if @raster.isLandscape()
+      new paper.Rectangle(@raster.width - LABEL_WIDTH, @raster.height - LABEL_HEIGHT, LABEL_WIDTH, LABEL_HEIGHT)
     else
-      new paper.Rectangle(@img.width - LABEL_HEIGHT, 0, LABEL_HEIGHT, LABEL_WIDTH)
-    color = @img.getAverageColor(labelRect)
+      new paper.Rectangle(@raster.width - LABEL_HEIGHT, 0, LABEL_HEIGHT, LABEL_WIDTH)
+    color = @raster.getAverageColor(labelRect)
 
-    @img.position = originalPosition
+    @raster.position = originalPosition
     return color.red > 0.998 and color.green > 0.998 and color.blue > 0.998
 
-  croppedSize: _.once ->
-    if @shouldCrop()
-      if @img.isLandscape()
-        @img.size.subtract([2 * CROP_SIZE, CROP_SIZE + LABEL_HEIGHT])
+  computeCroppedSize: (crop) ->
+    if crop
+      if @raster.isLandscape()
+        @raster.size.subtract([2 * CROP_SIZE, CROP_SIZE + LABEL_HEIGHT])
       else
-        @img.size.subtract([CROP_SIZE + LABEL_HEIGHT, 2 * CROP_SIZE])
+        @raster.size.subtract([CROP_SIZE + LABEL_HEIGHT, 2 * CROP_SIZE])
     else
-      @img.size
+      @raster.size
 
-  cropOffset: _.once ->
-    if @shouldCrop() then new paper.Point(CROP_SIZE, CROP_SIZE) else new paper.Point(0, 0)
+  computeCropOffset: (crop) ->
+    if crop then new paper.Point(CROP_SIZE, CROP_SIZE) else new paper.Point(0, 0)
 
   # Size calculations
 
@@ -168,9 +176,9 @@ class Puzzle extends EventSource
 
   tileSize: ->
     scaledSize = if @maxSize
-        @croppedSize().scaledToFit(@maxSize)
+        @croppedSize.scaledToFit(@maxSize)
       else
-        @croppedSize()
+        @croppedSize
     scaledSize.divide(@numTiles * 2).floor().multiply(2)
 
   # Grids and tiles
@@ -178,11 +186,11 @@ class Puzzle extends EventSource
   shuffle: ->
     @playSound("shuffle")
     
-    _.chain(@gridIds())
+    _.chain(@gridIds)
       .shuffle()
       .each((gridId, i) => @tiles[i].placeAt(gridId))
 
-  gridIds: _.once ->
+  computeGridIds: ->
     ids = []
     for y in [0...@numTiles]
       for x in [0...@numTiles]
@@ -192,11 +200,11 @@ class Puzzle extends EventSource
   gridIdAt: (point) ->
     point.divide(@tileSize()).floor()
 
-  createTileAt: (gridId) ->
-    tileStart = @cropOffset().add(gridId.multiply(@tileSize()))
+  createTileAt: (gridId, cropOffset) ->
+    tileStart = cropOffset.add(gridId.multiply(@tileSize()))
     tileRect = new paper.Rectangle(tileStart, @tileSize())
 
-    tile = new Tile(@img, tileRect)
+    tile = new Tile(@raster, tileRect)
     tile.gridId = gridId
     tile.placeAt(gridId)
 
@@ -274,7 +282,7 @@ class Puzzle extends EventSource
     return
 
 
-# Loading code
+# Export code
 
 window.ccplay =
   Puzzle: Puzzle
