@@ -3,14 +3,6 @@
 
 # Utilities
 
-getQueryParameter = _.memoize (name) ->
-  re = new RegExp("[?&]#{name}=([^&]+)")
-  match = re.exec(window.location.search)
-  if match
-    decodeURIComponent(match[1].replace('+', ' '))
-  else
-    null
-
 proxyUrl = (url) ->
   "proxy.php?url=#{encodeURIComponent(url)}"
 
