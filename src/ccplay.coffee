@@ -19,6 +19,15 @@ loadImageDeferred = (srcUrl) ->
 
 # Wikipedia Article Handling
 
+EXCEPTIONS = /// ^(
+  .                               # single letters
+  | [IVXLCDM]+                    # roman numerals
+  | \d+                           # arabic numerals
+  | m\.b\.H | e\.V                # organizations
+  | bzw | geb | St | gem | Nr     # common abbreviations
+  | lat | engl                    # language abbreviations
+)$ ///
+
 loadWikipediaArticleDeferred = (link) ->
   title = _.last(link.split("wiki/"))
   articleUrl = "http://de.wikipedia.org/w/api.php?format=json&action=parse&prop=text&page=#{title}"
@@ -38,14 +47,9 @@ extractContent = (article) ->
     return text.replace(/\[\d\]/, "")
 
   getFirstSentence = (text) ->
-    endsOnIgnoredEnding = (stopIndex) ->
-      IGNORED_ENDINGS = [
-        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-        "m.b.H", "e.V",
-        "bzw", "geb", "St", "gem", "Nr",
-        "lat", "engl"
-      ]
-      _.some(IGNORED_ENDINGS, (e) -> e == text.substr(stopIndex - e.length, e.length))
+    lastWord = (stopIndex) ->
+      previousSpace = text.lastIndexOf(" ", stopIndex)
+      text.substring(previousSpace + 1, stopIndex)
 
     done = false
     stopIndex = 0
@@ -55,7 +59,7 @@ extractContent = (article) ->
         # End of text, or no period at all
         stopIndex = text.length - 1
         done = true
-      else if text[stopIndex + 1] != " " or endsOnIgnoredEnding(stopIndex)
+      else if text[stopIndex + 1] != " " or EXCEPTIONS.test(lastWord(stopIndex))
         # Period that is not followed by a space, or preceded by an exception
         stopIndex += 1
       else
