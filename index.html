@@ -2,7 +2,11 @@
 <html>
 <head>
   <title>CC.Play</title>
+  <link rel="stylesheet" href="css/normalize.css" type="text/css" />
   <link rel="stylesheet" href="css/ccplay.css" type="text/css" />
+  <link rel="stylesheet" href="css/responsive-gs-12col.css" type="text/css" />
+  <link rel="stylesheet" href="css/ie.css" type="text/css" />
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.9/backbone-min.js"></script>
@@ -10,6 +14,7 @@
   <script type="text/javascript" src="lib/paper.js"></script>
   <script type="text/javascript" src="src/puzzle.js"></script>
   <script type="text/javascript" src="src/ccplay.js"></script>
+  <meta name="viewport" content="width=768px, minimum-scale=1.0, maximum-scale=1.0" />
 </head>
 <body>
   <script type="text/template" id="decadeTemplate">
@@ -40,29 +45,47 @@
 
   <script type="text/template" id="actionsTemplate">
     <ul>
-      <li id="showSolution">
-        L&ouml;sung
-      </li>
       <% _.each(links, function(link) { %>
         <li class="reward">
           <a href="<%= link %>" target="_blank">Wikipedia</a>
         </li>
       <% }) %>
-      <li>
-        <a href="#image/">Neues Bild</a>
+      <li class="imgreload">
+        <a href="#image/"> </a>
       </li>
+      <li id="showTimeline" class="imgzeit">  </li>
+      </li>
+      <li id="showHelp" class="imghelp">  </li>
+      </li>
+      <li id="showSolution" class="imgidea">  </li>
     </ul>
   </script>
 
   <img id="loading" class="fade" src="img/loading.gif"></img>
 
-  <div id="main" class="fade">
-    <div id="timeline"></div>
-    <h1 id="title"></h1>
-    <canvas id="puzzle"></canvas>
-    <div id="license"></div>
-    <div id="article"></div>
-    <div id="actions"></div>
+
+  <div id="main" class="fade container row">
+
+    <section id="content_wrap" class="row">
+
+      <sidebar class="col span_4">
+        <div id="actions"></div>
+      </sidebar>
+
+      <puzzle id="content_wrap" class="col span_8">
+        <h1 id="title"></h1>
+        <canvas id="puzzle"></canvas>
+        <div id="license"> </div>
+      </puzzle>
+
+    </section> 
+  
+    <footer class="row">
+      <div id="teaser" class="col span_12 clr"></div>
+      <div id="article" class="col span_12 clr"></div>
+      <div id="timeline" class="row"></div>
+    </footer>
+
   </div>
 </body>
 </html>

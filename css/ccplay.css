@@ -1,6 +1,7 @@
 html, body {
   height: 100%;
   margin: 0;
+  font-family: 'Droid Sans', sans-serif;
 }
 
 #loading {
@@ -13,7 +14,9 @@ html, body {
 }
 
 #main {
-  width: 80%;
+  /*visibility: hidden;*/
+
+  width: 98%;
   height: 100%;
 
   position: absolute;
@@ -39,3 +42,92 @@ html, body {
 .reward {
   display: none;
 }
+
+#title {
+  font-size: 1.5em;
+  font-weight: bold;
+  vertical-align: middle;
+  padding-top: 0.2em;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+#teaser {
+  font-size: 0.9em;
+  background-color: #e4e4e4;
+  padding: 0.4em;
+}
+
+#license, #licenseTemplate {
+  font-size: 0.6em;
+  color: #333;
+}
+
+#timeline {
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #e4e4e4;
+  margin: 0 auto 0 auto;
+  position:relative;
+  vertical-align: middle;
+  padding: 0.4em;
+  /*margin-left:auto;
+  margin-right:auto;
+  margin-top:0;
+  background-color: #333;
+  color: #333;
+  text-shadow: 0px 2px 3px #666;*/
+}
+
+/*** NAV-BUTTONS ***/
+
+ul li {
+  /*display: inline;*/
+  list-style: none;
+}
+
+.imgidea, .imgzeit, .imghelp, .imgreload {
+  background: url("../img/ccbuttons_hq.png") 0 0 no-repeat;*/
+  /*background-size: 50%;*/
+  display:block;
+  /*display:inline-block;*/
+  width: 55px;
+  height: 55px;
+  border: none;
+  margin: 10px 10px 0 0;
+}
+
+.imgidea {
+  background-position: 0 0;
+}
+
+.imgreload {
+   background-position: -55px 0;
+}
+
+.imghelp {
+  background-position: -165px 0;
+}
+
+.imgzeit {
+  background-position: -110px 0;
+}
+
+
+/*a:hover .imgidea, .imgzeit, .imghelp, .imgreload {
+  background-position-y: -55px;
+}*/
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) { 
+
+}
+ 
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) { ... }
+ 
+/* Landscape phones and down */
+@media (max-width: 480px) { 
+
+ }
+
+
