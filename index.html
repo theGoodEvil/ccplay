@@ -30,8 +30,12 @@
     <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
   </script>
 
-  <script type="text/template" id="teaserTemplate">
-    <%= teaser %>
+  <script type="text/template" id="articleTemplate">
+    <% if (solved) { %>
+      <%= article.firstParagraph %>
+    <% } else { %>
+      <%= article.teaser %>
+    <% } %>
   </script>
 
   <script type="text/template" id="actionsTemplate">
@@ -57,7 +61,7 @@
     <h1 id="title"></h1>
     <canvas id="puzzle"></canvas>
     <div id="license"></div>
-    <div id="teaser"></div>
+    <div id="article"></div>
     <div id="actions"></div>
   </div>
 </body>

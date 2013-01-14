@@ -25,16 +25,19 @@ loadWikipediaArticleDeferred = (link) ->
   $.getJSON(proxyUrl(articleUrl)).then (json) ->
     return json.parse.text["*"]
 
-extractTeaser = (article) ->
-  firstParagraph = (article) ->
+extractContent = (article) ->
+  getFirstParagraph = (article) ->
     ps = $(article).filter ->
       elem = $(this)
       return elem.is("p") &&
         elem.has("#coordinates").length == 0 &&
         elem.has("[style=\"display:none\"]").length == 0
-    return ps.first().text()
+    text = ps.first().text()
 
-  firstSentence = (text) ->
+    # Strip footnote links
+    return text.replace(/\[\d\]/, "")
+
+  getFirstSentence = (text) ->
     endsOnIgnoredEnding = (stopIndex) ->
       IGNORED_ENDINGS = [
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -60,10 +63,10 @@ extractTeaser = (article) ->
         done = true
     return text.substr(0, stopIndex + 1)
 
-  teaser = firstSentence(firstParagraph(article))
+  firstParagraph = getFirstParagraph(article)
+  teaser = getFirstSentence(firstParagraph)
 
-  # Strip footnote links
-  return teaser.replace(/\[\d\]/, "")
+  return { firstParagraph: firstParagraph, teaser: teaser }
 
 
 # Model
@@ -87,6 +90,13 @@ class Timeline extends Backbone.Collection
 class MainModel extends Backbone.Model
   urlRoot: "image.php"
 
+  defaults:
+    solved: false
+
+  reset: (options = {}) ->
+    @clear(options)
+    @set(_.result(this, "defaults"), options)
+
   queryParam: (prop) ->
     "#{prop}=#{@get(prop)}" if @get(prop)?
 
@@ -97,13 +107,13 @@ class MainModel extends Backbone.Model
   fetch: ->
     @set("loading", true)
     Backbone.Model::fetch.call(this, silent: true).then =>
-      $.when(@fetchTeaser(), @fetchImage()).then =>
+      $.when(@fetchArticle(), @fetchImage()).then =>
         @set("loading", false)
         @change()
 
-  fetchTeaser: ->
+  fetchArticle: ->
     loadWikipediaArticleDeferred(@get("links")[0]).then (article) =>
-      @set("teaser", extractTeaser(article), silent: true)
+      @set("article", extractContent(article), silent: true)
 
   fetchImage: ->
     loadImageDeferred(proxyUrl(@get("url"))).then (img) =>
@@ -197,7 +207,7 @@ class MainView extends GroupView
 
     @title = @addTemplateSubview("title")
     @license = @addTemplateSubview("license")
-    @teaser = @addTemplateSubview("teaser")
+    @article = @addTemplateSubview("article")
     @actions = @addTemplateSubview("actions")
 
     @listenTo(@model, "change", @render)
@@ -211,6 +221,7 @@ class MainView extends GroupView
       @$el.css("opacity", 0)
     else if @model.get("solved")
       $(".reward").removeClass("reward")
+      @article.render()
     else
       super()
 
@@ -231,7 +242,7 @@ class MainView extends GroupView
     maxPuzzleHeight = window.innerHeight -
                       @title.$el.outerHeight(true) -
                       @license.$el.outerHeight(true) -
-                      @teaser.$el.outerHeight(true)
+                      @article.$el.outerHeight(true)
     @$el.css("max-width", "100%")
 
     maxPuzzleWidth = @$el.width()
@@ -267,7 +278,7 @@ class App extends Backbone.Router
       timeline.unlock(model.get("year")) if solved
 
   newImage: (options) ->
-    @model.clear(silent: true)
+    @model.reset(silent: true)
     @model.set(options, silent: true)
     @model.fetch()
 
