@@ -96,30 +96,28 @@ ul li {
   list-style: none;
 }
 
-.imgidea, .imgzeit, .imghelp, .imgreload {
+.button {
   background: url("../img/ccbuttons_hq.png") 0 0 no-repeat;*/
-  /*background-size: 50%;*/
   display:block;
-  /*display:inline-block;*/
   width: 55px;
   height: 55px;
   border: none;
   margin: 5px;
 }
 
-.imgidea {
+#solutionButton {
   background-position: 0 0;
 }
 
-.imgreload {
+#reloadButton {
    background-position: -55px 0;
 }
 
-.imghelp {
+#helpButton {
   background-position: -165px 0;
 }
 
-.imgzeit {
+#timelineButton {
   background-position: -110px 0;
 }
 
@@ -141,6 +139,8 @@ ul li {
   #title {
     clear: both;
   }
+
+  .button {
+    display: inline-block;
+  }
 }
-
-

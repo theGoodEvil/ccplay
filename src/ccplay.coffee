@@ -233,8 +233,8 @@ class MainView extends GroupView
       @adjustSize()
 
       @delegateEvents
-        "mousedown #showSolution": "showSolution"
-        "touchstart #showSolution": "showSolution"
+        "mousedown #solutionButton": "showSolution"
+        "touchstart #solutionButton": "showSolution"
 
   showSolution: ->
     @puzzle.showSolution()
