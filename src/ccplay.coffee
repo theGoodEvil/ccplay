@@ -215,7 +215,7 @@ class MainView extends GroupView
     @actions = @addTemplateSubview("actions")
 
     @listenTo(@model, "change", @render)
-    $(window).on("resize", => @adjustSize())
+    $(window).resize => @adjustSize()
 
   addTemplateSubview: (name) ->
     @addSubview(new TemplateView(name, el: $("##{name}"), model: @model))
@@ -243,18 +243,16 @@ class MainView extends GroupView
     return false
 
   adjustSize: ->
-    maxPuzzleHeight = window.innerHeight -
-                      @title.$el.outerHeight(true) -
-                      @license.$el.outerHeight(true) -
-                      @article.$el.outerHeight(true)
     @$el.css("max-width", "100%")
+    availableWidth = @$el.width()
 
-    maxPuzzleWidth = @$el.width()
-    @puzzle.setMaxSize(maxPuzzleWidth, maxPuzzleHeight)
+    actionsWidth = if availableWidth > 480 then @actions.$el.width() + 20 else 0
+    maxPuzzleWidth = availableWidth - actionsWidth
+
+    @puzzle.setMaxSize(maxPuzzleWidth, Infinity)
 
     actualPuzzleWidth = @puzzle.$el.width()
-    @$el.css("max-width", "#{actualPuzzleWidth}px")
-
+    @$el.css("max-width", "#{actualPuzzleWidth + actionsWidth}px")
 
 # App
 

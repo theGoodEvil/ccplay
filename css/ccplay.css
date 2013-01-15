@@ -25,6 +25,14 @@ html, body {
   right: 0;
 }
 
+#actions {
+  float: right;
+}
+
+footer {
+  clear: both;
+}
+
 .decade:after {
   content: " ";
 }

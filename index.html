@@ -2,11 +2,12 @@
 <html>
 <head>
   <title>CC.Play</title>
+
   <link rel="stylesheet" href="css/normalize.css" type="text/css" />
   <link rel="stylesheet" href="css/ccplay.css" type="text/css" />
-  <link rel="stylesheet" href="css/responsive-gs-12col.css" type="text/css" />
-  <link rel="stylesheet" href="css/ie.css" type="text/css" />
+
   <link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.9/backbone-min.js"></script>
@@ -14,7 +15,8 @@
   <script type="text/javascript" src="lib/paper.js"></script>
   <script type="text/javascript" src="src/puzzle.js"></script>
   <script type="text/javascript" src="src/ccplay.js"></script>
-  <meta name="viewport" content="width=768px, minimum-scale=1.0, maximum-scale=1.0" />
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
 </head>
 <body>
   <script type="text/template" id="decadeTemplate">
@@ -63,27 +65,20 @@
 
   <img id="loading" class="fade" src="img/loading.gif"></img>
 
+  <div id="main" class="fade">
 
-  <div id="main" class="fade container row">
-
-    <section id="content_wrap" class="row">
-
-      <sidebar class="col span_4">
-        <div id="actions"></div>
-      </sidebar>
-
-      <puzzle id="content_wrap" class="col span_8">
-        <h1 id="title"></h1>
-        <canvas id="puzzle"></canvas>
-        <div id="license"> </div>
-      </puzzle>
-
-    </section> 
+    <div id="actions"></div>
   
-    <footer class="row">
-      <div id="teaser" class="col span_12 clr"></div>
-      <div id="article" class="col span_12 clr"></div>
-      <div id="timeline" class="row"></div>
+    <div>
+      <h1 id="title"></h1>
+      <canvas id="puzzle"></canvas>
+      <div id="license"> </div>
+    </div>
+
+    <footer>
+      <div id="teaser"></div>
+      <div id="article"></div>
+      <div id="timeline"></div>
     </footer>
 
   </div>
