@@ -7,12 +7,18 @@ module.exports = function(grunt) {
     watch: {
       files: "<config:coffee.src>",
       tasks: "coffee"
+    },
+    exec: {
+      server: {
+        command: "php -S 0.0.0.0:8000"
+      }
     }
   });
 
-  grunt.loadNpmTasks('grunt-coffee');
+  grunt.loadNpmTasks("grunt-coffee");
+  grunt.loadNpmTasks("grunt-exec");
 
-  grunt.registerTask('default', 'coffee');
-  grunt.registerTask('dev', 'coffee watch');
+  grunt.registerTask("default", "coffee watch");
+  grunt.registerTask("serve", "exec:server");
 
 };
