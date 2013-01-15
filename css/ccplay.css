@@ -14,8 +14,6 @@ html, body {
 }
 
 #main {
-  /*visibility: hidden;*/
-
   width: 98%;
   height: 100%;
 
@@ -88,6 +86,11 @@ footer {
 
 /*** NAV-BUTTONS ***/
 
+ul {
+  margin: 0;
+  padding: 0;
+}
+
 ul li {
   /*display: inline;*/
   list-style: none;
@@ -101,7 +104,7 @@ ul li {
   width: 55px;
   height: 55px;
   border: none;
-  margin: 10px 10px 0 0;
+  margin: 5px;
 }
 
 .imgidea {
@@ -135,7 +138,9 @@ ul li {
  
 /* Landscape phones and down */
 @media (max-width: 480px) { 
-
- }
+  #title {
+    clear: both;
+  }
+}
 
 
