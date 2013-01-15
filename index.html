@@ -21,7 +21,7 @@
 <body>
   <script type="text/template" id="decadeTemplate">
     <% if (unlocked) { %>
-      <a href="#decade/<%= id %>"><%= id %></a>
+      <a href="#decade/<%= id %>" class="tllink"><%= id %></a>
     <% } else { %>
       <%= id %>
     <% } %>
@@ -34,7 +34,7 @@
   <script type="text/template" id="licenseTemplate">
     Bildlizenz: Bundesarchiv, <%= archiveid %> /
     <%= author %> /
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de">CC BY-SA 3.0 DE</a>
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de" class="ccorglink">CC BY-SA 3.0 DE</a>
   </script>
 
   <script type="text/template" id="articleTemplate">
@@ -56,17 +56,16 @@
   <div id="main" class="fade">
     <div id="actions"></div>
     <h1 id="title"></h1>
-  
     <div>
       <canvas id="puzzle"></canvas>
       <div id="license"> </div>
     </div>
 
     <footer>
-      <div id="teaser"></div>
       <div id="article"></div>
       <div id="timeline"></div>
     </footer>
+
   </div>
 </body>
 </html>
