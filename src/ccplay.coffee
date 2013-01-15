@@ -231,6 +231,7 @@ class MainView extends GroupView
 
       @$el.css("opacity", 1)
       @adjustSize()
+      _.defer -> window.scrollTo(0, 1)
 
       @delegateEvents
         "mousedown #solutionButton": "showSolution"
