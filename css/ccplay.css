@@ -45,10 +45,6 @@ footer {
   -webkit-transition: opacity .5s ease-in-out;
 }
 
-.reward {
-  display: none;
-}
-
 #title {
   font-size: 1.5em;
   font-weight: bold;
