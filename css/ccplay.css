@@ -95,6 +95,7 @@ ul li {
 .button {
   /* background: url("../img/ccbuttons_hq.png") 0 0 no-repeat;*/
   background-color: black;
+  display: block;
   width: 95px;
   height: 50px;
   border: none;
