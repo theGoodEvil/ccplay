@@ -46,21 +46,9 @@
   </script>
 
   <script type="text/template" id="actionsTemplate">
-    <ul>
-      <% _.each(links, function(link) { %>
-        <li class="reward">
-          <a href="<%= link %>" target="_blank">Wikipedia</a>
-        </li>
-      <% }) %>
-      <li id="reloadButton" class="button">
-        <a href="#image/"> </a>
-      </li>
-      <li id="timelineButton" class="button">  </li>
-      </li>
-      <li id="helpButton" class="button">  </li>
-      </li>
-      <li id="solutionButton" class="button">  </li>
-    </ul>
+    <a href="#image/"><div id="reloadButton" class="button"></div></a>
+    <a href="#image/"><div id="helpButton" class="button"></div></a>
+    <div id="solutionButton" class="button"></div>
   </script>
 
   <img id="loading" class="fade" src="img/loading.gif"></img>

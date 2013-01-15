@@ -97,12 +97,12 @@ ul li {
 }
 
 .button {
-  background: url("../img/ccbuttons_hq.png") 0 0 no-repeat;*/
-  display:block;
-  width: 55px;
-  height: 55px;
+  /* background: url("../img/ccbuttons_hq.png") 0 0 no-repeat;*/
+  background-color: black;
+  width: 95px;
+  height: 50px;
   border: none;
-  margin: 5px;
+  margin: 0;
 }
 
 #solutionButton {
