@@ -156,13 +156,18 @@ class GroupView extends Backbone.View
     _.invoke(@subviews, "render")
 
 
-class DecadeView extends TemplateView
-  tagName: "span"
+class DecadeView extends Backbone.View
+  tagName: "a"
   className: "decade"
+  attributes: -> href: "#decade/#{@model.get("id")}"
 
   constructor: (options) ->
-    super("decade", options)
-    @listenTo(@model, "change", @render)
+    super(options)
+    @$el.text(@model.get("id"))
+    @listenTo(@model, "change:unlocked", @render)
+
+  render: ->
+    @$el.toggleClass("unlocked", @model.get("unlocked"))
 
 
 class TimelineView extends GroupView
@@ -253,6 +258,7 @@ class MainView extends GroupView
 
     actualPuzzleWidth = @puzzle.$el.width()
     @$el.css("max-width", "#{actualPuzzleWidth + actionsWidth}px")
+
 
 # App
 
