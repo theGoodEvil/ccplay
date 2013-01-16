@@ -203,6 +203,7 @@ class MainView extends GroupView
       @delegateEvents
         "mousedown #solutionButton": "showSolution"
         "touchstart #solutionButton": "showSolution"
+        "click #helpButton": => @model.set("solved", true)
 
   showSolution: ->
     @puzzle.showSolution()
