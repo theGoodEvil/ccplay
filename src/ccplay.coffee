@@ -220,6 +220,7 @@ class MainView extends GroupView
     @actions = @addTemplateSubview("actions")
 
     @listenTo(@model, "change", @render)
+    @listenTo(@model, "change:solved", => @article.$el.toggle("slow"))
     $(window).resize => @adjustSize()
 
   addTemplateSubview: (name) ->
@@ -228,8 +229,6 @@ class MainView extends GroupView
   render: ->
     if @model.get("loading")
       @$el.css("opacity", 0)
-    else if @model.get("solved")
-      @article.render()
     else
       super()
 

@@ -30,12 +30,8 @@
   </script>
 
   <script type="text/template" id="articleTemplate">
-    <% if (solved) { %>
-      <%= article.firstParagraph %>
-      <a href="<%= links[0] %>" target="_blank">Mehr in der Wikipedia.</a>
-    <% } else { %>
-      <%= article.teaser %>
-    <% } %>
+    <%= article.firstParagraph %>
+    <a href="<%= links[0] %>" target="_blank">Mehr in der Wikipedia.</a>
   </script>
 
   <script type="text/template" id="actionsTemplate">
@@ -49,13 +45,13 @@
   <div id="main" class="fade">
     <div id="actions"></div>
     <h1 id="title"></h1>
+    <div id="article"></div>
     <div>
       <canvas id="puzzle"></canvas>
       <div id="license"> </div>
     </div>
 
     <footer>
-      <div id="article"></div>
       <div id="timeline"></div>
     </footer>
 
