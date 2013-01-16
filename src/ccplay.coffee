@@ -224,7 +224,6 @@ class MainView extends GroupView
     if @model.get("loading")
       @$el.css("opacity", 0)
     else if @model.get("solved")
-      $(".reward").removeClass("reward")
       @article.render()
     else
       super()
