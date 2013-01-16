@@ -2,6 +2,7 @@ html, body {
   height: 100%;
   margin: 0;
   font-family: 'Droid Sans', sans-serif;
+  background-color: #f0efec;
 }
 
 #loading {
@@ -17,6 +18,8 @@ html, body {
   width: 98%;
   height: 100%;
 
+  clear: both;
+
   position: absolute;
   margin: auto;
   left: 0;
@@ -24,11 +27,8 @@ html, body {
 }
 
 #actions {
-  float: right;
-}
-
-footer {
-  clear: both;
+  position: absolute;
+  /* Exact position will be set using JavaScript. */
 }
 
 .decade:after {
@@ -52,7 +52,7 @@ footer {
   padding-top: 0.2em;
 }
 
-#license, #licenseTemplate {
+#license {
   font-size: 0.6em;
   color: #ccc;
   text-align: right;
@@ -115,43 +115,7 @@ a:hover.ccorglink {
 #timelineButton {
   background-position: -110px 0;
 }
-
-
-/* Portrait tablet to landscape and desktop */
-@media (min-width: 768px) { 
-
-  #actions {
-    margin-top: 4.1em;
-  }
-
-  #license, #licenseTemplate {
-    padding-right: 9.7em;
-  }
-
-  #article {
-    margin: 0 5.8em 2em 0;
-  }
-
-}
  
-/* Landscape phone to portrait tablet */
-@media (max-width: 767px) {
-
-  #actions {
-    margin-top: 5.9em;
-  }
-
-  #license, #licenseTemplate {
-    padding-right: 9.7em;
-  }
-
-  #article {
-    margin: 0 5.8em 2em 0;
-  }
-
- }
- 
-
 /* Landscape phones and down */
 @media (max-width: 480px) { 
   #title {
@@ -162,16 +126,9 @@ a:hover.ccorglink {
     display: inline-block;
   }
 
- #license, #licenseTemplate {
-    padding-right: 0.5em;
-  }
-
   #actions {
+    position: static;
     margin-top: 0.5em;
     margin-right: 0.5em;
-  }
-
-  #article {
-  margin: 0 0.5em 0.5em 0;
   }
 }
