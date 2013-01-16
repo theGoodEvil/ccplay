@@ -46,10 +46,6 @@ html, body {
   /* Exact position will be set using JavaScript. */
 }
 
-.decade:after {
-  content: " ";
-}
-
 .fade {
   opacity: 0;
 
@@ -96,14 +92,35 @@ a:hover.ccorglink {
   background-color: #666;
 }
 
-
 #timeline {
-  font-size: 3.2em;
-  font-weight: bold;
-  background-color: #e4e4e4;
-  position: relative;
+  background-color: #c8c8c8;
   text-align: center;
-  padding: 0.4em;
+}
+
+.decade {
+  display: inline-block;
+  color: #333;
+
+  width: 80px;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+
+  font-size: 1.5em;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.decade.unlocked {
+  color: #e4e4e4;
+  background-color: #333;
+}
+
+.decade:hover {
+  background-color: #e4e4e4;
+}
+
+.decade.unlocked:hover {
+  color: #333;
 }
 
 /*** NAV-BUTTONS ***/
