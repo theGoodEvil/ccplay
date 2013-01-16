@@ -1,7 +1,8 @@
 html, body {
   height: 100%;
   margin: 0;
-  font-family: 'Droid Sans', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 300;
   background-color: #f0efec;
 }
 
@@ -47,7 +48,7 @@ html, body {
 
 #title {
   font-size: 1.5em;
-  font-weight: bold;
+  font-weight: 400;
   vertical-align: middle;
   padding-top: 0.2em;
 }
