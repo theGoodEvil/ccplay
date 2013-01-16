@@ -88,6 +88,7 @@ a:hover.ccorglink {
 /*** NAV-BUTTONS ***/
 
 .button {
+  display: block;
   background: url("../img/ccbuttons-k.png") 0 0 no-repeat;
   width: 55px;
   height: 55px;
