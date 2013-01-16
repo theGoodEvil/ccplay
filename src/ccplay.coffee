@@ -214,7 +214,7 @@ class MainView extends GroupView
   adjustSize: ->
     @$el.css("max-width", "100%")
     availableWidth = @$el.width()
-    isPhone = availableWidth <= 480
+    isPhone = availableWidth <= 320
 
     actionsWidth = if isPhone then 0 else @actions.$el.width() + 20
     maxPuzzleWidth = availableWidth - actionsWidth
