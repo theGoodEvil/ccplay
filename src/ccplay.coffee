@@ -19,58 +19,22 @@ loadImageDeferred = (srcUrl) ->
 
 # Wikipedia Article Handling
 
-EXCEPTIONS = /// ^(
-  .                               # single letters
-  | [IVXLCDM]+                    # roman numerals
-  | \d+                           # arabic numerals
-  | m\.b\.H | e\.V                # organizations
-  | bzw | geb | St | gem | Nr     # common abbreviations
-  | lat | engl                    # language abbreviations
-)$ ///
-
 loadWikipediaArticleDeferred = (link) ->
   title = _.last(link.split("wiki/"))
   articleUrl = "http://de.wikipedia.org/w/api.php?format=json&action=parse&prop=text&page=#{title}"
   $.getJSON(proxyUrl(articleUrl)).then (json) ->
     return json.parse.text["*"]
 
-extractContent = (article) ->
-  getFirstParagraph = (article) ->
-    ps = $(article).filter ->
-      elem = $(this)
-      return elem.is("p") &&
-        elem.has("#coordinates").length == 0 &&
-        elem.has("[style=\"display:none\"]").length == 0
-    text = ps.first().text()
+firstParagraph = (article) ->
+  ps = $(article).filter ->
+    elem = $(this)
+    return elem.is("p") &&
+      elem.has("#coordinates").length == 0 &&
+      elem.has("[style=\"display:none\"]").length == 0
+  text = ps.first().text()
 
-    # Strip footnote links
-    return text.replace(/\[\d\]/, "")
-
-  getFirstSentence = (text) ->
-    lastWord = (stopIndex) ->
-      previousSpace = text.lastIndexOf(" ", stopIndex)
-      text.substring(previousSpace + 1, stopIndex)
-
-    done = false
-    stopIndex = 0
-    until done
-      stopIndex = text.indexOf(".", stopIndex)
-      if stopIndex in [-1, text.length - 1]
-        # End of text, or no period at all
-        stopIndex = text.length - 1
-        done = true
-      else if text[stopIndex + 1] != " " or EXCEPTIONS.test(lastWord(stopIndex))
-        # Period that is not followed by a space, or preceded by an exception
-        stopIndex += 1
-      else
-        # Period that ends the sentence
-        done = true
-    return text.substr(0, stopIndex + 1)
-
-  firstParagraph = getFirstParagraph(article)
-  teaser = getFirstSentence(firstParagraph)
-
-  return { firstParagraph: firstParagraph, teaser: teaser }
+  # Strip footnote links
+  return text.replace(/\[\d\]/, "")
 
 
 # Model
@@ -117,7 +81,7 @@ class MainModel extends Backbone.Model
 
   fetchArticle: ->
     loadWikipediaArticleDeferred(@get("links")[0]).then (article) =>
-      @set("article", extractContent(article), silent: true)
+      @set("article", { firstParagraph: firstParagraph(article) }, silent: true)
 
   fetchImage: ->
     loadImageDeferred(proxyUrl(@get("url"))).then (img) =>
