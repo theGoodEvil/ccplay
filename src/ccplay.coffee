@@ -214,10 +214,18 @@ class MainView extends GroupView
     @$el.css("max-width", "100%")
     availableWidth = @$el.width()
 
-    actionsWidth = if availableWidth > 480 then @actions.$el.width() + 20 else 0
+    isPhone = availableWidth <= 480
+
+    actionsWidth = if isPhone then 0 else @actions.$el.width() + 20
     maxPuzzleWidth = availableWidth - actionsWidth
 
-    @puzzle.setMaxSize(maxPuzzleWidth, Infinity)
+    maxPuzzleHeight = window.innerHeight -
+                      @title.$el.outerHeight(true) -
+                      @license.$el.outerHeight(true) -
+                      $("#timeline").outerHeight(true) -
+                      if isPhone then @actions.$el.outerHeight(true) else 0
+
+    @puzzle.setMaxSize(maxPuzzleWidth, maxPuzzleHeight)
 
     actualPuzzleWidth = @puzzle.$el.width()
     @$el.css("max-width", "#{actualPuzzleWidth + actionsWidth}px")
