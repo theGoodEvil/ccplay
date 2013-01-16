@@ -60,7 +60,7 @@ html, body {
   -webkit-transition: opacity .5s ease-in-out;
 }
 
-#title {
+h1 {
   font-size: 1.5em;
   font-weight: 400;
   vertical-align: middle;
@@ -68,11 +68,14 @@ html, body {
   margin-bottom: 0.7em;
 }
 
-#article {
-  display: none;
+p {
   text-align: justify;
   margin-top: -0.7em;
   margin-bottom: 1em;
+}
+
+#article, #help {
+  display: none;
 }
 
 #license {
@@ -130,17 +133,13 @@ a:hover.button {
 
 /* Below iPad Portrait */
 @media (max-width: 767px) {
-  #title {
+  h1 {
     font-size: 1.25em;
   }
 }
 
 /* Portrait iPhone */
 @media (max-width: 320px) {
-  #title {
-    clear: both;
-  }
-
   a.button {
     display: inline-block;
   }
