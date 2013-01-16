@@ -6,6 +6,15 @@ html, body {
   background-color: #f0efec;
 }
 
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to { 
+    -webkit-transform: rotate(360deg);
+  }
+}
+
 #loading {
   position: absolute;
   margin: auto;
@@ -13,6 +22,11 @@ html, body {
   right: 0;
   top: 0;
   bottom: 0;
+
+  -webkit-animation-name: rotate; 
+  -webkit-animation-duration: 1s; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
 }
 
 #main {
