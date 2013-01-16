@@ -193,7 +193,7 @@ class MainView extends GroupView
   render: ->
     if @model.get("loading")
       @$el.css("opacity", 0)
-    else
+    else unless @model.get("solved")
       super()
 
       @$el.css("opacity", 1)
