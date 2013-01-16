@@ -179,7 +179,7 @@ class Puzzle extends EventSource
         @croppedSize.scaledToFit(@maxSize)
       else
         @croppedSize
-    scaledSize.divide(@numTiles * 2).floor().multiply(2)
+    scaledSize.divide(@numTiles).floor()
 
   # Grids and tiles
 
