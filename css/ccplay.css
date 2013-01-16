@@ -50,7 +50,15 @@ html, body {
   font-size: 1.5em;
   font-weight: 400;
   vertical-align: middle;
-  padding-top: 0.2em;
+  margin-top: 1em;
+  margin-bottom: 0.7em;
+}
+
+#article {
+  display: none;
+  text-align: justify;
+  margin-top: -0.7em;
+  margin-bottom: 1em;
 }
 
 #license {
@@ -79,11 +87,6 @@ a:hover.ccorglink {
   position: relative;
   text-align: center;
   padding: 0.4em;
-}
-
-#article {
-  display: none;
-  text-align: justify;
 }
 
 /*** NAV-BUTTONS ***/
