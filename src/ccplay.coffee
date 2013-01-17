@@ -216,8 +216,8 @@ class MainView extends GroupView
     availableWidth = @$el.width()
     isPhone = availableWidth <= 320
 
-    actionsWidth = if isPhone then 0 else @actions.$el.width() + 20
-    maxPuzzleWidth = availableWidth - actionsWidth
+    actionsWidth = if isPhone then 0 else @actions.$el.width()
+    maxPuzzleWidth = availableWidth - 2 * actionsWidth
     maxPuzzleHeight = window.innerHeight -
                       @title.$el.outerHeight(true) -
                       @license.$el.outerHeight(true) -
