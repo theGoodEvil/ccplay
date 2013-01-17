@@ -1,3 +1,8 @@
+@import compass/css3/text-shadow
+@import compass/css3/transform
+@import compass/css3/transition
+@import animation
+
 $dark-gray: #333
 $medium-gray: #c8c8c8
 $light-gray: #e4e4e4
@@ -10,13 +15,21 @@ html, body
   font-weight: 300
   background-color: $extra-light-gray
 
-@keyframes rotate
++keyframes(rotate)
   from
-    transform: rotate(0deg)
+    +rotate(0deg)
   to
-    transform: rotate(360deg)
+    +rotate(360deg)
+
+@mixin fade
+  opacity: 0
+  +transition(opacity 0.5s ease-in-out)
 
 #loading
+  +fade
+  +animation(rotate 1s infinite)
+  +animation-timing-function(linear)
+
   position: absolute
   margin: auto
   left: 0
@@ -24,12 +37,9 @@ html, body
   top: 0
   bottom: 0
 
-  animation-name: rotate 
-  animation-duration: 1s 
-  animation-iteration-count: infinite
-  animation-timing-function: linear
-
 #main
+  +fade
+
   width: 98%
   height: 100%
 
@@ -43,15 +53,6 @@ html, body
 #actions
   position: absolute
   /* Exact position will be set using JavaScript. */
-
-.fade
-  opacity: 0
-
-  transition: opacity .5s ease-in-out
-  -moz-transition: opacity .5s ease-in-out
-  -ms-transition: opacity .5s ease-in-out
-  -o-transition: opacity .5s ease-in-out
-  -webkit-transition: opacity .5s ease-in-out
 
 h1
   font-size: 1.5em
@@ -119,7 +120,7 @@ a.button, a:active.button
   text-align: center
   line-height: 66px
 
-  text-shadow: -1px -1px 2px $light-gray, 1px 1px 2px $light-gray
+  +text-shadow($light-gray -1px -1px 2px, $light-gray 1px 1px 2px)
 
 a:hover.button
   background-color: $light-gray

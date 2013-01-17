@@ -8,6 +8,9 @@ module.exports = function(grunt) {
       dev: {
         src: "sass/",
         dest: "css/",
+        require: [
+          "animation"
+        ],
         linecomments: false
       }
     },
