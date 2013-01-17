@@ -1,0 +1,16 @@
+{
+  "name": "ccplay",
+  "version": "0.3.0",
+  "private": true,
+  "dependencies": {
+    "grunt-coffee": "~0.0.6",
+    "grunt-exec": "~0.3.0",
+    "grunt-compass": "~0.3.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/theGoodEvil/ccplay.git"
+  },
+  "author": "the Good Evil GmbH",
+  "license": "MIT"
+}
