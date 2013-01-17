@@ -230,7 +230,6 @@ class MainView extends GroupView
 
     unless isPhone
       @actions.$el.css("left", actualPuzzleWidth)
-      @actions.$el.css("top", "#{@title.$el.outerHeight(true)}px")
 
 
 # App
