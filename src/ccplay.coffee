@@ -184,7 +184,7 @@ class MainView extends GroupView
     @actions = @addTemplateSubview("actions")
 
     @listenTo(@model, "change", @render)
-    @listenTo(@model, "change:solved", => @article.$el.toggle("slow"))
+    @listenTo(@model, "change:solved", => @article.$el.slideToggle("slow"))
     $(window).resize => @adjustSize()
 
   addTemplateSubview: (name) ->
@@ -203,7 +203,7 @@ class MainView extends GroupView
       @delegateEvents
         "mousedown #solutionButton": "showSolution"
         "touchstart #solutionButton": "showSolution"
-        "click #helpButton": => $("#help").toggle("slow")
+        "click #helpButton": => $("#help").slideToggle("slow")
 
   showSolution: ->
     @puzzle.showSolution()
