@@ -4,9 +4,22 @@ module.exports = function(grunt) {
     coffee: {
       src: "src/*.coffee"
     },
+    compass: {
+      dev: {
+        src: "sass/",
+        dest: "css/",
+        linecomments: false
+      }
+    },
     watch: {
-      files: "<config:coffee.src>",
-      tasks: "coffee"
+      coffee: {
+        files: "<config:coffee.src>",
+        tasks: "coffee"
+      },
+      compass: {
+        files: "sass/*.sass",
+        tasks: "compass"
+      }
     },
     exec: {
       server: {
@@ -16,9 +29,10 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks("grunt-coffee");
+  grunt.loadNpmTasks("grunt-compass");
   grunt.loadNpmTasks("grunt-exec");
 
-  grunt.registerTask("default", "coffee watch");
+  grunt.registerTask("default", "coffee compass watch");
   grunt.registerTask("serve", "exec:server");
 
 };

@@ -1,4 +1,6 @@
+css/ccplay.css
 src/*.js
 config.ini
 
 node_modules
+.sass-cache/*
