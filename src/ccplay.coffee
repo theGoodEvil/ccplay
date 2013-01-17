@@ -76,7 +76,8 @@ class MainModel extends Backbone.Model
     @set("loading", true)
     Backbone.Model::fetch.call(this, silent: true).then =>
       $.when(@fetchArticle(), @fetchImage()).then =>
-        @set("loading", false)
+        @set("twitterLink", @twitterLink(), silent: true)
+        @set("loading", false, silent: true)
         @change()
 
   fetchArticle: ->
@@ -86,6 +87,11 @@ class MainModel extends Backbone.Model
   fetchImage: ->
     loadImageDeferred(proxyUrl(@get("url"))).then (img) =>
       @set("img", img, silent: true)
+
+  twitterLink: ->
+    text = encodeURIComponent("Es ist #{@get("year")}.")
+    url = encodeURIComponent("http://ccplay.de/image/#{@get("id")}")
+    "https://twitter.com/share?lang=de&text=#{text}&url=#{url}&hashtags=ccplay"
 
 
 # Views
