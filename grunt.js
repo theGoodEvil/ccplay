@@ -36,7 +36,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-compass");
   grunt.loadNpmTasks("grunt-exec");
 
-  grunt.registerTask("default", "coffee compass watch");
   grunt.registerTask("serve", "exec:server");
+  grunt.registerTask("compile", "coffee compass");
+  grunt.registerTask("default", "compile watch");
 
 };
