@@ -56,7 +56,7 @@ class Timeline extends Backbone.Collection
 
 
 class MainModel extends Backbone.Model
-  urlRoot: "image.php"
+  urlRoot: "imageData.php"
 
   defaults:
     solved: false
