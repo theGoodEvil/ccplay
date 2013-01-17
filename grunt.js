@@ -11,6 +11,7 @@ module.exports = function(grunt) {
         require: [
           "animation"
         ],
+        bundleExec: true,
         linecomments: false
       }
     },
