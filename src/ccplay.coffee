@@ -203,13 +203,15 @@ class MainView extends GroupView
       @delegateEvents
         "mousedown #solutionButton": "showSolution"
         "touchstart #solutionButton": "showSolution"
-        "click #helpButton": => $("#help").slideToggle("slow")
+        "click #helpButton": "toggleHelp"
 
   showSolution: ->
     @puzzle.showSolution()
     $(document).one "mouseup touchend touchcancel", =>
       @puzzle.hideSolution()
-    return false
+
+  toggleHelp: ->
+    $("#help").slideToggle("slow")
 
   adjustSize: ->
     @$el.css("max-width", "100%")

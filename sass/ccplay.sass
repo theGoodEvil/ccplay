@@ -1,6 +1,7 @@
 @import compass/css3/text-shadow
 @import compass/css3/transform
 @import compass/css3/transition
+@import compass/css3/user-interface
 @import animation
 
 $dark-gray: #333
@@ -67,6 +68,8 @@ html, body
   top: 0
   /* left position will be set using JS */
 
+  +user-select(none)
+
 h1
   font-size: 1.5em
   font-weight: 400
@@ -125,7 +128,7 @@ p
 
 /*** NAV-BUTTONS ***/
 
-a.button, a:active.button
+.button, a:active.button
   display: block
   width: 60px
   height: 60px
@@ -139,11 +142,11 @@ a.button, a:active.button
   font-size: 42px
   text-decoration: none
   text-align: center
-  line-height: 66px
+  line-height: 65px
 
   +text-shadow($light-gray -1px -1px 2px, $light-gray 1px 1px 2px)
 
-a:hover.button
+a:hover.button, div:hover.button
   background-color: $light-gray
 
 /* Below iPad Portrait */
@@ -153,7 +156,7 @@ a:hover.button
 
 /* Portrait iPhone */
 @media (max-width: 320px)
-  a.button
+  .button
     display: inline-block
     margin-top: 15px
     margin-left: 0
