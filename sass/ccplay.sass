@@ -8,6 +8,9 @@ $medium-gray: #c8c8c8
 $light-gray: #e4e4e4
 $extra-light-gray: #f0efec
 
+@function prefix-expression($property, $value)
+  @return "(-webkit-#{$property}: #{$value}), (-moz-#{$property}: #{$value}), (-o-#{$property}: #{$value}), (#{$property}: #{$value})"
+
 html, body
   height: 100%
   margin: 0
@@ -21,7 +24,7 @@ html, body
   to
     +rotate(360deg)
 
-@mixin fade
+=fade
   opacity: 0
   +transition(opacity 0.5s ease-in-out)
 
@@ -29,6 +32,14 @@ html, body
   +fade
   +animation(rotate 1s infinite)
   +animation-timing-function(linear)
+
+  background: url("../img/loading.png") no-repeat center
+  @media #{prefix-expression(min-device-pixel-ratio, 2)}
+    background-image: url("../img/loading@2x.png")
+
+  background-size: 60px 60px
+  width: 60px
+  height: 60px
 
   position: absolute
   margin: auto
