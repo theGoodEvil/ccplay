@@ -112,7 +112,19 @@ class TemplateView extends Backbone.View
     @$el.html(markup)
 
 
-class GroupView extends Backbone.View
+class FadableView extends Backbone.View
+  fadeIn: ->
+    @$el.css("visibility", "visible")
+    @$el.css("opacity", "1")
+
+  fadeOut: ->
+      @$el.css("opacity", "0")
+      setTimeout =>
+        @$el.css("visibility", "hidden")
+      , 500
+
+
+class GroupView extends FadableView
   constructor: (options) ->
     super(options)
     @subviews = []
@@ -166,16 +178,28 @@ class PuzzleView extends Backbone.View
     @puzzle?.hideSolution()
 
 
-class LoadingView extends Backbone.View
+class WelcomeView extends FadableView
+  constructor: (options) ->
+    super(options)
+    @listenTo(@model, "change", @render)
+
+  render: ->
+    if @model.get("welcoming")
+      @fadeIn()
+    else
+      @fadeOut()
+
+
+class LoadingView extends FadableView
   constructor: (options) ->
     super(options)
     @listenTo(@model, "change", @render)
 
   render: ->
     if @model.get("loading")
-      @$el.css("opacity", "1")
+      @fadeIn()
     else
-      @$el.css("opacity", "0")
+      @fadeOut()
 
 
 class MainView extends GroupView
@@ -197,12 +221,12 @@ class MainView extends GroupView
     @addSubview(new TemplateView(name, el: $("##{name}"), model: @model))
 
   render: ->
-    if @model.get("loading")
-      @$el.css("opacity", 0)
+    if @model.get("loading") or @model.get("welcoming")
+      @fadeOut()
     else unless @model.get("solved")
       super()
 
-      @$el.css("opacity", 1)
+      @fadeIn()
       @adjustSize()
       _.defer -> window.scrollTo(0, 1)
 
@@ -275,6 +299,7 @@ class App extends Backbone.Router
     timelineView.render()
 
     @model = new MainModel()
+    welcomeView = new WelcomeView(el: $("#welcome"), model: @model)
     loadingView = new LoadingView(el: $("#loading"), model: @model)
     mainView = new MainView(el: $("#main"), model: @model)
 
@@ -287,17 +312,18 @@ class App extends Backbone.Router
   newImage: (options) ->
     @model.reset(silent: true)
     @model.set(options, silent: true)
+    @model.set("welcoming", false, silent: true)
     @model.fetch()
 
   decadeRoute: (decade) ->
     @newImage(decade: decade)
 
   imageRoute: (id) ->
-    options = if id then {id: id} else {}
+    options = if id then { id: id } else {}
     @newImage(options)
 
   defaultRoute: ->
-    
+    @model.set("welcoming", true)
 
 
 # Go!
