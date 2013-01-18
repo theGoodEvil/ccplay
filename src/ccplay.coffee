@@ -221,6 +221,10 @@ class MainView extends GroupView
           @toggleElement("imprint")
           @toggleElement("help", false)
           return false
+        "click .closeButton": =>
+          @toggleElement("imprint", false)
+          @toggleElement("help", false)
+          return false
 
   showSolution: ->
     @puzzle.showSolution()
