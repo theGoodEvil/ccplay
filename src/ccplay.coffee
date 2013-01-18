@@ -209,15 +209,30 @@ class MainView extends GroupView
       @delegateEvents
         "mousedown #solutionButton": "showSolution"
         "touchstart #solutionButton": "showSolution"
-        "click #helpButton": "toggleHelp"
+        "click #reloadButton": =>
+          @toggleElement("help", false)
+          @toggleElement("imprint", false)
+          return true
+        "click #helpButton": =>
+          @toggleElement("help")
+          @toggleElement("imprint", false)
+          return false
+        "click #imprintLink": =>
+          @toggleElement("imprint")
+          @toggleElement("help", false)
+          return false
 
   showSolution: ->
     @puzzle.showSolution()
     $(document).one "mouseup touchend touchcancel", =>
       @puzzle.hideSolution()
 
-  toggleHelp: ->
-    $("#help").slideToggle("slow")
+  toggleElement: (id, newState) ->
+    element = $("##{id}")
+    currentState = element.is(":visible")
+    newState = !currentState unless newState?
+    $("html, body").animate({ scrollTop: 0 }, 500) if newState
+    element.slideToggle("slow") if newState != currentState    
 
   adjustSize: ->
     @$el.css("max-width", "100%")
