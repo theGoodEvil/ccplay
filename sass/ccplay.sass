@@ -30,6 +30,31 @@ html, body
   opacity: 0
   +transition(opacity 0.5s ease-in-out)
 
+#welcomeWrapper
+  display: table
+  width: 100%
+  height: 100%
+
+#welcome
+  display: table-cell
+  vertical-align: middle
+  text-align: center
+
+  .caption, .teaser
+    display: inline-block
+
+  .caption
+    font-weight: 700
+    font-size: 89px
+
+    .button
+      display: inline-block
+      vertical-align: 12px
+
+  .teaser
+    text-align: left
+    margin-bottom: 1.5em
+
 #loading
   +fade
   +animation(rotate 1s infinite)

@@ -297,7 +297,7 @@ class App extends Backbone.Router
     @newImage(options)
 
   defaultRoute: ->
-    @navigate("image/", trigger: true)
+    
 
 
 # Go!
