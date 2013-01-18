@@ -1,3 +1,4 @@
+@import compass/css3/box-sizing
 @import compass/css3/text-shadow
 @import compass/css3/transform
 @import compass/css3/transition
@@ -92,6 +93,11 @@ p
 
 #article, #help, #imprint
   display: none
+
+#help, #imprint
+  +box-sizing(border-box)
+  padding: 0.5em 1.5em
+  background-color: $light-gray
 
 #license
   font-size: 0.6em
