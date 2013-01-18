@@ -207,17 +207,17 @@ class MainView extends GroupView
       _.defer -> window.scrollTo(0, 1)
 
       @delegateEvents
-        "mousedown #solutionButton": "showSolution"
-        "touchstart #solutionButton": "showSolution"
-        "click #reloadButton": =>
+        "mousedown .solutionButton": "showSolution"
+        "touchstart .solutionButton": "showSolution"
+        "click .reloadButton": =>
           @toggleElement("help", false)
           @toggleElement("imprint", false)
           return true
-        "click #helpButton": =>
+        "click .helpButton": =>
           @toggleElement("help")
           @toggleElement("imprint", false)
           return false
-        "click #imprintLink": =>
+        "click .imprintLink": =>
           @toggleElement("imprint")
           @toggleElement("help", false)
           return false
