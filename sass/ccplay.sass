@@ -214,15 +214,20 @@ a:hover.button, div:hover.button
 @media (max-width: 320px)
   .button
     display: inline-block
+    margin: 0
     margin-top: 15px
-    margin-left: 0
-    margin-bottom: 0
-
-    &:last-child
-      margin-right: 0
 
   #actions
     position: static
+    width: 100%
+    text-align: justify
+
+    .stretch
+      width: 100%
+      display: inline-block
+
+  #timeline
+    margin-top: 0
 
   #welcome
     .caption
