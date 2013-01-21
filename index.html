@@ -27,10 +27,11 @@
   </script>
 
   <script type="text/template" id="licenseTemplate">
-    <a href="" class="imprintLink">Impressum</a> //
-    Bildlizenz: Bundesarchiv, <%= archiveid %> /
-    <%= author %> /
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank">CC BY-SA 3.0 DE</a>
+    Bildlizenz: <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search%5Bform%5D%5BSIGNATUR%5D=<% print(archiveid.replace(" ", "+")) %>" target="archive">Bundesarchiv, <%= archiveid %></a>
+    / <%= author %> /
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank">CC BY-SA 3.0 DE</a> |
+    Quelle: <a href="http://commons.wikimedia.org/wiki?curid=<%= pageid %>" target="commons">Wikimedia Commons</a> |
+    <a href="" class="imprintLink">Impressum</a>
   </script>
 
   <script type="text/template" id="articleTemplate">
