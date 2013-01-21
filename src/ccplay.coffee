@@ -252,7 +252,12 @@ class MainView extends GroupView
 
   onSolve: ->
     @article.$el.slideToggle("slow")
-    $("#flash").css("visibility": "visible", "background-color": "rgba(255, 255, 255, 0)")
+
+    flash = $("#flash")
+    flash.css(visibility: "visible", "background-color": "rgba(255, 255, 255, 0)")
+    setTimeout ->
+      flash.css(visibility: "hidden", "background-color": "rgba(255, 255, 255, 0.8)")
+    , 500
 
   showSolution: ->
     @puzzle.showSolution()
