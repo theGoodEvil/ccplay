@@ -214,7 +214,7 @@ class MainView extends GroupView
     @actions = @addTemplateSubview("actions")
 
     @listenTo(@model, "change", @render)
-    @listenTo(@model, "change:solved", => @article.$el.slideToggle("slow"))
+    @listenTo(@model, "change:solved", @onSolve)
     $(window).resize => @adjustSize()
 
   addTemplateSubview: (name) ->
@@ -250,6 +250,10 @@ class MainView extends GroupView
           @toggleElement("help", false)
           return false
 
+  onSolve: ->
+    @article.$el.slideToggle("slow")
+    $("#flash").css("visibility": "visible", "background-color": "rgba(255, 255, 255, 0)")
+
   showSolution: ->
     @puzzle.showSolution()
     $(document).one "mouseup touchend touchcancel", =>
@@ -278,6 +282,7 @@ class MainView extends GroupView
 
     actualPuzzleWidth = "#{@puzzle.$el.width()}px"
     @$el.css("max-width", actualPuzzleWidth)
+    $("#flash").height(@puzzle.$el.height())
 
     unless isPhone
       @actions.$el.css("left", actualPuzzleWidth)
