@@ -118,10 +118,10 @@ class FadableView extends Backbone.View
     @$el.css("opacity", "1")
 
   fadeOut: ->
-      @$el.css("opacity", "0")
-      setTimeout =>
-        @$el.css("visibility", "hidden")
-      , 500
+    @$el.css("opacity", "0")
+    setTimeout =>
+      @$el.css("visibility", "hidden")
+    , 500
 
 
 class GroupView extends FadableView
