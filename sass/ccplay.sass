@@ -164,7 +164,7 @@ p
   display: inline-block
   color: $dark-gray
 
-  width: 70px
+  width: 4em
   padding-top: 0.25em
   padding-bottom: 0.25em
 
@@ -172,15 +172,22 @@ p
   font-weight: 400
   text-decoration: none
 
-.decade.unlocked
-  color: $light-gray
-  background-color: $dark-gray
+  &:before
+    content: "\f056" // icon-minus-sign
+    
+    font-family: "FontAwesome"
+    font-size: 0.7em
+    
+    margin-right: 0.3em
+    vertical-align: 0.1em
 
-.decade:hover
-  background-color: $light-gray
+  &:hover
+    color: $dark-gray
+    background-color: $light-gray
 
-.decade.unlocked:hover
-  color: $dark-gray
+  &.unlocked
+    &:before
+      content: "\f058" // icon-ok-sign
 
 /*** NAV-BUTTONS ***/
 
