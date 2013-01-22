@@ -69,7 +69,7 @@ class MainModel extends Backbone.Model
     "#{prop}=#{@get(prop)}" if @get(prop)?
 
   url: ->
-    param = @queryParam("id") or @queryParam("decade")
+    param = @queryParam("pageid") or @queryParam("decade")
     _.compact([@urlRoot, param]).join("?")
 
   fetch: ->
@@ -90,7 +90,7 @@ class MainModel extends Backbone.Model
 
   twitterLink: ->
     text = encodeURIComponent("Es ist #{@get("year")}.")
-    url = encodeURIComponent("http://ccplay.de/image/#{@get("id")}")
+    url = encodeURIComponent("http://ccplay.de/image/#{@get("pageid")}")
     "https://twitter.com/share?lang=de&text=#{text}&url=#{url}&hashtags=ccplay"
 
 
@@ -298,7 +298,7 @@ class MainView extends GroupView
 class App extends Backbone.Router
   routes:
     "decade/:decade": "decadeRoute"
-    "image/(:id)": "imageRoute"
+    "image/(:pageid)": "imageRoute"
     "*path": "defaultRoute"
 
   constructor: ->
@@ -313,8 +313,8 @@ class App extends Backbone.Router
     loadingView = new LoadingView(el: $("#loading"), model: @model)
     mainView = new MainView(el: $("#main"), model: @model)
 
-    @model.on "change:id", (model, id) =>
-      @navigate("image/#{id}", replace: true) if id?
+    @model.on "change:pageid", (model, pageid) =>
+      @navigate("image/#{pageid}", replace: true) if pageid?
 
     @model.on "change:solved", (model, solved) ->
       timeline.unlock(model.get("year")) if solved
@@ -328,8 +328,8 @@ class App extends Backbone.Router
   decadeRoute: (decade) ->
     @newImage(decade: decade)
 
-  imageRoute: (id) ->
-    options = if id then { id: id } else {}
+  imageRoute: (pageid) ->
+    options = if pageid then { pageid: pageid } else {}
     @newImage(options)
 
   defaultRoute: ->
