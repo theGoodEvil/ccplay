@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CC.Play</title>
+  <title>CC PLAY</title>
 
   <link rel="stylesheet" href="css/normalize.css" type="text/css" />
   <link rel="stylesheet" href="css/ccplay.css" type="text/css" />
+  <link rel="shortcut icon" href="favicon.ico" />
 
   <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css" rel="stylesheet" type="text/css">
@@ -13,8 +14,8 @@
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.9/backbone-min.js"></script>
   <script type="text/javascript" src="//thegoodevil.com/piwik/piwik.js"></script>
-  <script type="text/javascript" src="lib/buzz.min.js"></script>
-  <script type="text/javascript" src="lib/paper.js"></script>
+  <script type="text/javascript" src="lib/buzz/buzz.min.js"></script>
+  <script type="text/javascript" src="lib/paper/paper.js"></script>
   <script type="text/javascript" src="src/puzzle.js"></script>
   <script type="text/javascript" src="src/ccplay.js"></script>
 
@@ -26,10 +27,11 @@
   </script>
 
   <script type="text/template" id="licenseTemplate">
-    <a href="" class="imprintLink">Impressum</a> //
-    Bildlizenz: Bundesarchiv, <%= archiveid %> /
-    <%= author %> /
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank">CC BY-SA 3.0 DE</a>
+    Bildlizenz: <a href="http://www.bild.bundesarchiv.de/archives/barchpic/search/?search%5Bform%5D%5BSIGNATUR%5D=<% print(archiveid.replace(" ", "+")) %>" target="archive">Bundesarchiv, <%= archiveid %></a>
+    / <%= author %> /
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank">CC BY-SA 3.0 DE</a> |
+    Quelle: <a href="http://commons.wikimedia.org/wiki?curid=<%= pageid %>" target="commons">Wikimedia Commons</a> |
+    <a href="" class="imprintLink">Impressum</a>
   </script>
 
   <script type="text/template" id="articleTemplate">
@@ -42,6 +44,7 @@
     <div class="button helpButton"><i class="icon-medkit"></i></div>
     <div class="button solutionButton"><i class="icon-magic"></i></div>
     <a class="button" href="<%= twitterLink %>" target="twitter"><i class="icon-twitter"></i></a>
+    <span class="stretch"></span>
   </script>
 
   <div id="welcome">
@@ -158,22 +161,23 @@
       <h1>Analysedienste</h1>
 
       <p>
-        Wir verwenden Piwik, dabei handelt es sich um einen sog. Webanalysedienst. Piwik verwendet sog. "Cookies" die uns eine Nutzungsanalyse der Webseite ermöglicht. Ihre IP-Adresse wird bei diesem Vorgang umge­hend anony­mi­siert, so dass Sie als Nutzer für uns anonym bleiben. Die erzeugten Informationen über Ihre Benutzung dieser Webseite werden nicht an Dritte weitergegeben. Wenn Sie mit der Spei­che­rung und Aus­wer­tung die­ser Daten aus Ihrem Besuch nicht ein­ver­stan­den sind, dann kön­nen Sie der Spei­che­rung und Nut­zung nachfolgend jederzeit wider­spre­chen. In diesem Fall wird in Ihrem Browser ein sog. "Opt-Out-Cookie" abgelegt, was zur Folge hat, dass Piwik kei­ner­lei Sit­zungs­da­ten erhebt. Achtung: Wenn Sie Ihre "Cookies" löschen, so hat dies zur Folge, dass auch das "Opt-Out-Cookie" gelöscht wird und ggf. von Ihnen erneut aktiviert werden muss.
+        Wir verwenden Piwik. Dabei handelt es sich um einen sog. Webanalysedienst. Piwik verwendet sog. "Cookies", die uns eine Nutzungsanalyse der Webseite ermöglichen. Deine IP-Adresse wird bei diesem Vorgang umge­hend anony­mi­siert, so dass Du als Nutzer für uns anonym bleibst. Die erzeugten Informationen über Deine Benutzung dieser Webseite werden nicht an Dritte weitergegeben. Wenn Du mit der Spei­che­rung und Aus­wer­tung die­ser Daten aus Deinem Besuch nicht ein­ver­stan­den bist, dann kannst Du der Spei­che­rung und Nut­zung nachfolgend jederzeit wider­spre­chen. In diesem Fall wird in Deinem Browser ein sog. "Opt-Out-Cookie" abgelegt, was zur Folge hat, dass Piwik kei­ner­lei Sit­zungs­da­ten erhebt. Achtung: Wenn Du Deine "Cookies" löschst, so hat dies zur Folge, dass auch das "Opt-Out-Cookie" gelöscht wird und ggf. von Dir erneut aktiviert werden muss.
       </p>
 
       <h1>Widerspruch</h1>
 
       <p>
-        Sie können sich hier entscheiden, ob in Ihrem Browser ein eindeutiger Webanalyse-Cookie abgelegt werden darf, um dem Betreiber der Webseite die Erfassung und Analyse verschiedener statistischer Daten zu ermöglichen. Wenn Sie sich dagegen entscheiden möchten, klicken Sie den folgenden Link, um den Piwik-Deaktivierungs-Cookie in Ihrem Browser abzulegen. 
+        Du kannst Dich hier entscheiden, ob in Deinem Browser ein eindeutiger Webanalyse-Cookie abgelegt werden darf, um dem Betreiber der Webseite die Erfassung und Analyse verschiedener statistischer Daten zu ermöglichen. Wenn Du Dich dagegen entscheiden möchtest, klicke bitte den folgenden Link, um den Piwik-Deaktivierungs-Cookie in Deinem Browser abzulegen.
       </p>
 
-      <iframe frameborder="no" src="http://thegoodevil.com/piwik/index.php?module=CoreAdminHome&action=optOut&language=de" height="100px"></iframe>
+      <iframe src="http://thegoodevil.com/piwik/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=de"></iframe>
     </div>
 
     <div id="content">
       <h1 id="title"></h1>
       <p id="article"></p>
       <div id="puzzleContainer">
+        <div id="flash"></div>
         <canvas id="puzzle"></canvas>
         <div id="license"> </div>
         <div id="actions"></div>

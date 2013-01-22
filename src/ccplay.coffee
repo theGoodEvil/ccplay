@@ -69,7 +69,7 @@ class MainModel extends Backbone.Model
     "#{prop}=#{@get(prop)}" if @get(prop)?
 
   url: ->
-    param = @queryParam("id") or @queryParam("decade")
+    param = @queryParam("pageid") or @queryParam("decade")
     _.compact([@urlRoot, param]).join("?")
 
   fetch: ->
@@ -90,7 +90,7 @@ class MainModel extends Backbone.Model
 
   twitterLink: ->
     text = encodeURIComponent("Es ist #{@get("year")}.")
-    url = encodeURIComponent("http://ccplay.de/image/#{@get("id")}")
+    url = encodeURIComponent("http://ccplay.de/image/#{@get("pageid")}")
     "https://twitter.com/share?lang=de&text=#{text}&url=#{url}&hashtags=ccplay"
 
 
@@ -118,10 +118,10 @@ class FadableView extends Backbone.View
     @$el.css("opacity", "1")
 
   fadeOut: ->
-      @$el.css("opacity", "0")
-      setTimeout =>
-        @$el.css("visibility", "hidden")
-      , 500
+    @$el.css("opacity", "0")
+    setTimeout =>
+      @$el.css("visibility", "hidden")
+    , 500
 
 
 class GroupView extends FadableView
@@ -214,7 +214,7 @@ class MainView extends GroupView
     @actions = @addTemplateSubview("actions")
 
     @listenTo(@model, "change", @render)
-    @listenTo(@model, "change:solved", => @article.$el.slideToggle("slow"))
+    @listenTo(@model, "change:solved", @onSolve)
     $(window).resize => @adjustSize()
 
   addTemplateSubview: (name) ->
@@ -250,6 +250,15 @@ class MainView extends GroupView
           @toggleElement("help", false)
           return false
 
+  onSolve: ->
+    @article.$el.slideToggle("slow")
+
+    flash = $("#flash")
+    flash.css(visibility: "visible", "background-color": "rgba(255, 255, 255, 0)")
+    setTimeout ->
+      flash.css(visibility: "hidden", "background-color": "rgba(255, 255, 255, 0.8)")
+    , 500
+
   showSolution: ->
     @puzzle.showSolution()
     $(document).one "mouseup touchend touchcancel", =>
@@ -278,6 +287,7 @@ class MainView extends GroupView
 
     actualPuzzleWidth = "#{@puzzle.$el.width()}px"
     @$el.css("max-width", actualPuzzleWidth)
+    $("#flash").height(@puzzle.$el.height())
 
     unless isPhone
       @actions.$el.css("left", actualPuzzleWidth)
@@ -288,7 +298,7 @@ class MainView extends GroupView
 class App extends Backbone.Router
   routes:
     "decade/:decade": "decadeRoute"
-    "image/(:id)": "imageRoute"
+    "image/(:pageid)": "imageRoute"
     "*path": "defaultRoute"
 
   constructor: ->
@@ -303,8 +313,8 @@ class App extends Backbone.Router
     loadingView = new LoadingView(el: $("#loading"), model: @model)
     mainView = new MainView(el: $("#main"), model: @model)
 
-    @model.on "change:id", (model, id) =>
-      @navigate("image/#{id}", replace: true) if id?
+    @model.on "change:pageid", (model, pageid) =>
+      @navigate("image/#{pageid}", replace: true) if pageid?
 
     @model.on "change:solved", (model, solved) ->
       timeline.unlock(model.get("year")) if solved
@@ -318,8 +328,8 @@ class App extends Backbone.Router
   decadeRoute: (decade) ->
     @newImage(decade: decade)
 
-  imageRoute: (id) ->
-    options = if id then { id: id } else {}
+  imageRoute: (pageid) ->
+    options = if pageid then { pageid: pageid } else {}
     @newImage(options)
 
   defaultRoute: ->

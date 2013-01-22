@@ -10,12 +10,12 @@ $pdo->query('SET NAMES "utf8"');
 
 /* Prepare WHERE statement to filter results */
 $decade = array_key_exists('decade', $_GET) ? intval($_GET['decade']) : -1;
-$id = array_key_exists('id', $_GET) ? intval($_GET['id']) : -1;
+$pageid = array_key_exists('pageid', $_GET) ? intval($_GET['pageid']) : -1;
 $where = '';
 if ($decade > 0 && $decade < 2000) {
     $where = ' WHERE year >= ' . $decade . ' AND year < ' . ($decade + 10);
-} elseif ($id >= 0) {
-    $where = ' WHERE id = ' . $id;
+} elseif ($pageid >= 0) {
+    $where = ' WHERE pageid = ' . $pageid;
 }
 
 /* Get random image offset */
