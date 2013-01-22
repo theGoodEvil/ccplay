@@ -58,6 +58,7 @@ html, body
   .teaser
     text-align: left
     margin-bottom: 1.5em
+    padding-left: 1.5em
 
 #loading
   +fade
@@ -123,7 +124,8 @@ h1
 a, a:active, a:visited, a:hover
   color: inherit
   text-decoration: none
-  border-bottom: 1px dotted $dark-gray
+  border-bottom: 1px dotted $medium-gray
+  padding: 0 2px
 
 a:hover
   background-color: $medium-gray
@@ -172,41 +174,68 @@ p
   text-align: right
 
 #timeline
-  margin-top: 1em
-  background-color: $medium-gray
-  text-align: center
+  margin-top: 0.5em
 
-.decade
+.decade, a:visited.decade,
   display: inline-block
-  color: $dark-gray
+  color: $medium-gray
+  background-color: $light-gray
+  margin-right: 0.5em
+  margin-top: 0.5em
 
-  width: 4em
-  padding-top: 0.25em
+  width: 3.5em
+  padding-top: 0.25em 
   padding-bottom: 0.25em
 
   font-size: 1.5em
   font-weight: 400
-  text-decoration: none
+  text-decoration: none 
+  text-align: center 
 
-  &, &:hover
+  &:active.decade
+    background-color: $dark-gray
+
+  &,&:hover
     border: none
 
-  &:before
-    content: "\f056" // icon-minus-sign
+  &:after
+    content: "\f058" // icon-ok-sign
+    color: $medium-gray
     
     font-family: "FontAwesome"
     font-size: 0.7em
     
-    margin-right: 0.3em
+    margin-left: 0.3em
     vertical-align: 0.1em
 
+  &:last-child
+    margin-right: 0
+
   &:hover
-    color: $dark-gray
-    background-color: $light-gray
+    color: $extra-light-gray
+    background-color: $medium-gray
+    padding-top: 0.25em 
+    padding-bottom: 0.25em
+
+  &:hover:after
+    color: $extra-light-gray    
 
   &.unlocked
-    &:before
+    &.decade
+      color: $dark-gray
+      background-color: $medium-gray   
+    
+    &:hover.decade
+      background-color: $dark-gray
+      color: $medium-gray 
+
+    &:hover:after
+      color: $medium-gray    
+
+    &:after
       content: "\f058" // icon-ok-sign
+      color: $dark-gray
+
 
 /*** NAV-BUTTONS ***/
 
@@ -225,8 +254,10 @@ p
   text-decoration: none
   text-align: center
   line-height: 65px
+  padding: 0
 
   +text-shadow($light-gray -1px -1px 2px, $light-gray 1px 1px 2px)
+  +text-shadow($medium-gray 1px 1px 3px, $dark-gray 0px 0px 1px)
 
 a:hover.button, div:hover.button
   color: $dark-gray
