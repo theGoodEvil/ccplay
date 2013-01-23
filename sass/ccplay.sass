@@ -15,8 +15,6 @@ $extra-light-gray: #f0efec
   @return "(-webkit-#{$property}: #{$value}), (-moz-#{$property}: #{$value}), (-o-#{$property}: #{$value}), (#{$property}: #{$value})"
 
 html, body
-  height: 100%
-  margin: 0
   font-family: 'Source Sans Pro', sans-serif
   font-weight: 300
   background-color: $extra-light-gray
@@ -28,7 +26,7 @@ html, body
     +rotate(360deg)
 
 =fade
-  visibility: hidden
+  display: none
   opacity: 0
   +transition(opacity 0.5s ease-in-out)
 
@@ -85,8 +83,6 @@ html, body
   +fade
 
   width: 96%
-  height: 100%
-
   position: absolute
   margin: auto
   left: 0
@@ -99,7 +95,6 @@ html, body
   visibility: hidden
   position: absolute
   width: 100%
-  height: 100px
 
   background-color: rgba(255, 255, 255, 0.8)
   +transition(background-color 0.5s linear)
@@ -193,10 +188,10 @@ p
   text-decoration: none 
   text-align: center 
 
-  &:active.decade
+  &:active
     background-color: $dark-gray
 
-  &,&:hover
+  &, &:hover
     border: none
 
   &:after
@@ -215,18 +210,15 @@ p
   &:hover
     color: $extra-light-gray
     background-color: $medium-gray
-    padding-top: 0.25em 
-    padding-bottom: 0.25em
 
-  &:hover:after
-    color: $extra-light-gray    
+    &:after
+      color: $extra-light-gray    
 
   &.unlocked
-    &.decade
-      color: $dark-gray
-      background-color: $medium-gray   
+    color: $dark-gray
+    background-color: $medium-gray   
     
-    &:hover.decade
+    &:hover
       background-color: $dark-gray
       color: $medium-gray 
 
@@ -234,7 +226,6 @@ p
       color: $medium-gray    
 
     &:after
-      content: "\f00c" // icon-ok-sign = f58 -- icon-ok = f00c
       color: $dark-gray
 
 
@@ -281,7 +272,8 @@ a:hover.button, div:hover.button
     width: 100%
     text-align: justify
 
-    .stretch
+    &:after
+      content: ""
       width: 100%
       display: inline-block
 

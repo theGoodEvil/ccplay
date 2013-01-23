@@ -52,7 +52,7 @@ class Timeline extends Backbone.Collection
 
   unlock: (year) ->
     decade = Math.floor(year / 10) * 10
-    @get(decade).set("unlocked", true)
+    @get(decade)?.set("unlocked", true)
 
 
 class MainModel extends Backbone.Model
@@ -114,13 +114,14 @@ class TemplateView extends Backbone.View
 
 class FadableView extends Backbone.View
   fadeIn: ->
-    @$el.css("visibility", "visible")
-    @$el.css("opacity", "1")
+    @$el.show()
+    setTimeout =>
+      @$el.css(opacity: "1")
 
   fadeOut: ->
-    @$el.css("opacity", "0")
+    @$el.css(opacity: "0")
     setTimeout =>
-      @$el.css("visibility", "hidden")
+      @$el.hide()
     , 500
 
 
