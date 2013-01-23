@@ -187,10 +187,10 @@ p
   text-decoration: none 
   text-align: center 
 
-  &:active.decade
+  &:active
     background-color: $dark-gray
 
-  &,&:hover
+  &, &:hover
     border: none
 
   &:after
@@ -209,18 +209,15 @@ p
   &:hover
     color: $extra-light-gray
     background-color: $medium-gray
-    padding-top: 0.25em 
-    padding-bottom: 0.25em
 
-  &:hover:after
-    color: $extra-light-gray    
+    &:after
+      color: $extra-light-gray    
 
   &.unlocked
-    &.decade
-      color: $dark-gray
-      background-color: $medium-gray   
+    color: $dark-gray
+    background-color: $medium-gray   
     
-    &:hover.decade
+    &:hover
       background-color: $dark-gray
       color: $medium-gray 
 
@@ -228,7 +225,6 @@ p
       color: $medium-gray    
 
     &:after
-      content: "\f058" // icon-ok-sign
       color: $dark-gray
 
 
