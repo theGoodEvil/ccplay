@@ -145,7 +145,7 @@ class Puzzle extends EventSource
     color = @raster.getAverageColor(labelRect)
 
     @raster.position = originalPosition
-    return color.red > 0.998 and color.green > 0.998 and color.blue > 0.998
+    return color.red > 0.995 and color.green > 0.995 and color.blue > 0.995
 
   computeCroppedSize: (crop) ->
     if crop
