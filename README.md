@@ -11,6 +11,7 @@ CC PLAY benutzt die folgenden Open-Source-Bibliotheken unter deren jeweiliger Li
 * [jQuery](http://jquery.com)
 * [Paper.js](http://paperjs.org)
 * [Underscore.js](http://underscorejs.org)
+* [normalize.css](http://necolas.github.com/normalize.css/)
 
 ## Lizenz
 
