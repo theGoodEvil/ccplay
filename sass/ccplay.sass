@@ -6,7 +6,6 @@
 @import animation
 
 $dark-gray: #333
-$extra-medium-gray: #666
 $medium-gray: #c8c8c8
 $light-gray: #e4e4e4
 $extra-light-gray: #f0efec
@@ -174,12 +173,12 @@ p
 
 .decade, a:visited.decade,
   display: inline-block
-  color: $extra-medium-gray
+  color: $medium-gray
   background-color: $light-gray
   margin-right: 0.5em
   margin-top: 0.5em
 
-  width: 3.5em
+  width: 3.4em
   padding-top: 0.25em 
   padding-bottom: 0.25em
 
@@ -193,9 +192,11 @@ p
 
   &, &:hover
     border: none
+    padding-top: 0.25em 
+    padding-bottom: 0.25em
 
   &:after
-    content: "\f00c" // icon-ok-sign = f58 -- icon-ok = f00c
+    content: "\f00c" //icon-ok
     color: $medium-gray
     
     font-family: "FontAwesome"
