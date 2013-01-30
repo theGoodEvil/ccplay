@@ -13,7 +13,7 @@
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.9/backbone-min.js"></script>
-  <script type="text/javascript" src="//thegoodevil.com/piwik/piwik.js"></script>
+  <script type="text/javascript" src="//piwik.thegoodevil.com/piwik.js"></script>
   <script type="text/javascript" src="lib/buzz/buzz.min.js"></script>
   <script type="text/javascript" src="lib/paper/paper.js"></script>
   <script type="text/javascript" src="src/puzzle.js"></script>
@@ -174,7 +174,9 @@
         Du kannst Dich hier entscheiden, ob in Deinem Browser ein eindeutiger Webanalyse-Cookie abgelegt werden darf, um dem Betreiber der Webseite die Erfassung und Analyse verschiedener statistischer Daten zu ermöglichen. Wenn Du Dich dagegen entscheiden möchtest, klicke bitte den folgenden Link, um den Piwik-Deaktivierungs-Cookie in Deinem Browser abzulegen.
       </p>
 
-      <iframe src="http://thegoodevil.com/piwik/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=de"></iframe>
+      <!-- Piwik  /// Analytics customized for ccplay.de // You may remove this code. --> 
+      <iframe src="http://piwik.thegoodevil.com/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=de"></iframe>
+      <!-- End Piwik Tracking Code -->
     </div>
 
     <div id="content">
@@ -190,18 +192,17 @@
     </div>
   </div>
 
-  <!-- Piwik --> 
-  <script type="text/javascript">
-    try {
-      var piwikTracker = Piwik.getTracker("//thegoodevil.com/piwik/piwik.php", 2);
-      piwikTracker.trackPageView();
-      piwikTracker.enableLinkTracking();
-    } catch(err) {}
-  </script>
-
-  <noscript>
-    <p><img src="//thegoodevil.com/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p>
-  </noscript>
-  <!-- End Piwik Tracking Code -->
+<!-- Piwik  /// Analytics customized for ccplay.de // You may remove this code. --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.thegoodevil.com/" : "http://piwik.thegoodevil.com/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 2);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.thegoodevil.com/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
 </body>
 </html>
