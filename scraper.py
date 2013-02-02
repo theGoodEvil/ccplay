@@ -15,7 +15,7 @@ Base = declarative_base()
 
 
 class Image(Base):
-    __tablename__ = 'Images'
+    __tablename__ = 'images'
 
     id = Column(Integer, primary_key=True)
     pageid = Column(Integer, unique=True)
@@ -83,11 +83,11 @@ class Image(Base):
 
 
 class WikiLink(Base):
-    __tablename__ = 'WikiLinks'
+    __tablename__ = 'wikilinks'
 
     id = Column(Integer, primary_key=True)
     url = Column(String(255))
-    imageid = Column(Integer, ForeignKey('Images.id', ondelete='CASCADE'), index=True)
+    imageid = Column(Integer, ForeignKey('images.id', ondelete='CASCADE'), index=True)
 
 
 # IMAGE SCRAPING
