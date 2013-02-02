@@ -34,51 +34,6 @@ class Image(Base):
     def __repr__(self):
         return "<Image (pageid=%i)>" % (self.pageid)
 
-    @classmethod
-    def create_from_image_data(cls, image_data):
-        def get_value(pair):
-            if isinstance(pair['value'], basestring):
-                value = pair['value']
-            else:
-                value = pair['value'][0]['value']
-            return value.strip(' \n\r')
-
-        info = image_data['imageinfo'][0]
-        meta = info['metadata']
-
-        image = Image(
-            pageid=image_data['pageid'],
-            title=None,
-            author=None,
-            archiveid=None,
-            year=None,
-            month=None,
-            day=None,
-            url=info['url'],
-            mime=info['mime'],
-            width=info['width'],
-            height=info['height']
-        )
-
-        if meta is not None:
-            for pair in meta:
-                name = pair['name']
-                if name == 'Headline':
-                    image.title = get_value(pair)
-                elif name == 'ObjectName':
-                    image.archiveid = get_value(pair)
-                elif name == 'Artist':
-                    image.author = get_value(pair)
-                elif name == 'DateTimeOriginal':
-                    dateString = get_value(pair).split()[0]
-                    try:
-                        image.year, image.month, image.day = map(int, dateString.split(':'))
-                    except ValueError:
-                        print dateString
-                        raise
-
-        return image
-
 
 class WikiLink(Base):
     __tablename__ = 'wikilinks'
@@ -128,11 +83,56 @@ def iterate_image_data():
             return
 
 
+def create_image_from_data(image_data):
+    def get_value(pair):
+        if isinstance(pair['value'], basestring):
+            value = pair['value']
+        else:
+            value = pair['value'][0]['value']
+        return value.strip(' \n\r')
+
+    info = image_data['imageinfo'][0]
+    meta = info['metadata']
+
+    image = Image(
+        pageid=image_data['pageid'],
+        title=None,
+        author=None,
+        archiveid=None,
+        year=None,
+        month=None,
+        day=None,
+        url=info['url'],
+        mime=info['mime'],
+        width=info['width'],
+        height=info['height']
+    )
+
+    if meta is not None:
+        for pair in meta:
+            name = pair['name']
+            if name == 'Headline':
+                image.title = get_value(pair)
+            elif name == 'ObjectName':
+                image.archiveid = get_value(pair)
+            elif name == 'Artist':
+                image.author = get_value(pair)
+            elif name == 'DateTimeOriginal':
+                dateString = get_value(pair).split()[0]
+                try:
+                    image.year, image.month, image.day = map(int, dateString.split(':'))
+                except ValueError:
+                    print dateString
+                    raise
+
+    return image
+
+
 def scrape_images(session):
     start_time = time.time()
 
     for image_data in iterate_image_data():
-        img = Image.create_from_image_data(image_data)
+        img = create_image_from_data(image_data)
         if img.title is not None and img.year is not None:
             session.add(img)
             session.commit()
