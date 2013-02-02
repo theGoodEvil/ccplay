@@ -27,7 +27,6 @@ class Image(Base):
     day = Column(Integer)
     url = Column(String(1023))
     mime = Column(String(255))
-    sha1 = Column(String(40))
     width = Column(Integer)
     height = Column(Integer)
     wikilinks = relationship('WikiLink')
@@ -57,7 +56,6 @@ class Image(Base):
             day=None,
             url=info['url'],
             mime=info['mime'],
-            sha1=info['sha1'],
             width=info['width'],
             height=info['height']
         )
@@ -104,7 +102,7 @@ def request_pages(gcmcontinue):
         'gcmlimit': 500,
         'gcmcontinue': gcmcontinue,
         'prop': 'imageinfo',
-        'iiprop': 'url|size|sha1|mime|metadata'
+        'iiprop': 'url|size|mime|metadata'
     }
 
     res = requests.get('http://commons.wikimedia.org/w/api.php', params=params)
