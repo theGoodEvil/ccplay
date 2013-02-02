@@ -115,6 +115,7 @@ def request_pages(gcmcontinue):
     else:
         return pages, None
 
+
 def iterate_image_data():
     cont = None
     while True:
@@ -125,6 +126,7 @@ def iterate_image_data():
 
         if cont is None:
             return
+
 
 def scrape_images(session):
     start_time = time.time()
@@ -151,6 +153,7 @@ def iterate_image_batches(batch_size):
 
         yield images
 
+
 def request_image_usage(batch):
     print('Querying 50 image usages')
 
@@ -166,10 +169,12 @@ def request_image_usage(batch):
     res = requests.get('http://commons.wikimedia.org/w/api.php', params=params)
     return res.json['query']['pages']
 
+
 def iterate_image_usage(batch):
     usages = request_image_usage(batch)
     for usage in usages.itervalues():
         yield usage
+
 
 def scrape_wiki_links(session):
     start_time = time.time()
