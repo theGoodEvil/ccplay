@@ -3,7 +3,7 @@
 
 # Event source
 
-class EventSource
+class EventDispatcher
   constructor: ->
     @allListeners = {}
 
@@ -68,7 +68,7 @@ Tile = paper.Item.extend
     )
 
 
-class Puzzle extends EventSource
+class Puzzle extends EventDispatcher
   CROP_SIZE = 5
   LABEL_HEIGHT = 22
   LABEL_WIDTH = 400
