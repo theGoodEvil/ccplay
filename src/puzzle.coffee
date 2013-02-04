@@ -109,7 +109,6 @@ class Puzzle extends EventDispatcher
   startGame: ->
     @shuffle()
     @puzzleTool.activate()
-    @started = true
 
   destroy: ->
     @scope.remove()
@@ -127,7 +126,7 @@ class Puzzle extends EventDispatcher
   # Show solution
 
   showSolution: ->
-    if @started and not @lastPlacement
+    if @puzzleTool.isActive() and not @lastPlacement
       @emptyTool.activate()
       @lastPlacement = @currentPlacement()
       _.each(@tiles, (tile) -> tile.placeAt(tile.gridId))
@@ -135,7 +134,7 @@ class Puzzle extends EventDispatcher
     return false
 
   hideSolution: ->
-    if @started and @lastPlacement
+    if @lastPlacement
       _.each(@tiles, (tile, i) => tile.placeAt(@lastPlacement[i]))
       delete @lastPlacement
       @puzzleTool.activate()
