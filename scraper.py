@@ -18,7 +18,7 @@ class Image(Base):
     __tablename__ = 'images'
 
     id = Column(Integer, primary_key=True)
-    pageid = Column(Integer, unique=True)
+    pageid = Column(Integer, unique=True, index=True)
     title = Column(String(1023))
     author = Column(String(255))
     archiveid = Column(String(127))
