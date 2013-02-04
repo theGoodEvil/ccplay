@@ -4,7 +4,7 @@ import time
 
 import requests
 
-from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -29,7 +29,12 @@ class Image(Base):
     mime = Column(String(255))
     width = Column(Integer)
     height = Column(Integer)
+    landscape = Column(Boolean, index=True)
     wikilinks = relationship('WikiLink')
+
+    def __init__(self, **kwargs):
+        kwargs["landscape"] = kwargs.get("landscape", kwargs["width"] > kwargs["height"])
+        super(Image, self).__init__(**kwargs)
 
     def __repr__(self):
         return "<Image (pageid=%i)>" % (self.pageid)

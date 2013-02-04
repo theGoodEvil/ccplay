@@ -11,17 +11,24 @@ $pdo->query('SET NAMES "utf8"');
 /* Prepare WHERE statement to filter results */
 $decade = array_key_exists('decade', $_GET) ? intval($_GET['decade']) : -1;
 $pageid = array_key_exists('pageid', $_GET) ? intval($_GET['pageid']) : -1;
-$where = '';
-if ($decade > 0 && $decade < 2000) {
-    $where = ' WHERE year >= ' . $decade . ' AND year < ' . ($decade + 10);
-} elseif ($pageid >= 0) {
-    $where = ' WHERE pageid = ' . $pageid;
-}
 
-/* Get random image offset */
-$countStatement = $pdo->query('SELECT COUNT(*) AS imageCount FROM images' . $where);
-$row = $countStatement->fetch(PDO::FETCH_ASSOC);
-$randomOffset = mt_rand(0, $row['imageCount'] - 1);
+$where = '';
+$randomOffset = 0;
+
+if ($pageid >= 0) {
+  $where = ' WHERE pageid = ' . $pageid;
+} else {
+  $where = ' WHERE landscape = TRUE';
+
+  if ($decade > 0 && $decade < 2000) {
+    $where = $where . ' AND year >= ' . $decade . ' AND year < ' . ($decade + 10);
+  }
+
+  /* Get random image offset */
+  $countStatement = $pdo->query('SELECT COUNT(*) AS imageCount FROM images' . $where);
+  $row = $countStatement->fetch(PDO::FETCH_ASSOC);
+  $randomOffset = mt_rand(0, $row['imageCount'] - 1);
+}
 
 /* Fetch random image */
 $imageStatement = $pdo->prepare('SELECT * FROM images' . $where . ' LIMIT ?, 1');
