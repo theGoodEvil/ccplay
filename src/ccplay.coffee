@@ -260,10 +260,12 @@ class MainView extends GroupView
     , 500
 
   showSolution: ->
-    @puzzle.showSolution()
-    setTimeout =>
-      @puzzle.hideSolution()
-    , 2000
+    if @puzzle.showSolution()
+      $(".solutionButton").addClass("recharge")
+      setTimeout =>
+        $(".solutionButton").removeClass("recharge")
+        @puzzle.hideSolution()
+      , 2000
 
   toggleElement: (id, newState) ->
     element = $("##{id}")

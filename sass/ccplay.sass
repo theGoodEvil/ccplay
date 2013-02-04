@@ -24,6 +24,16 @@ html, body
   to
     +rotate(360deg)
 
++keyframes(recharge)
+  from
+    color: transparent
+  to
+    color: $dark-gray
+
+.recharge
+  +animation(recharge 2s)
+  +animation-timing-function(linear)
+
 =fade
   display: none
   opacity: 0

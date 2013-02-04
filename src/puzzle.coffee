@@ -131,6 +131,8 @@ class Puzzle extends EventDispatcher
       @emptyTool.activate()
       @lastPlacement = @currentPlacement()
       _.each(@tiles, (tile) -> tile.placeAt(tile.gridId))
+      return true
+    return false
 
   hideSolution: ->
     if @started and @lastPlacement
