@@ -232,8 +232,7 @@ class MainView extends GroupView
       _.defer -> window.scrollTo(0, 1)
 
       @delegateEvents
-        "mousedown .solutionButton": "showSolution"
-        "touchstart .solutionButton": "showSolution"
+        "click .solutionButton": "showSolution"
         "click .reloadButton": =>
           @toggleElement("help", false)
           @toggleElement("imprint", false)
@@ -262,8 +261,9 @@ class MainView extends GroupView
 
   showSolution: ->
     @puzzle.showSolution()
-    $(document).one "mouseup touchend touchcancel", =>
+    setTimeout =>
       @puzzle.hideSolution()
+    , 2000
 
   toggleElement: (id, newState) ->
     element = $("##{id}")
