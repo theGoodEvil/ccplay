@@ -100,9 +100,15 @@ class Puzzle extends EventDispatcher
     # Init sounds
     @addEventListener("solve", => @playSound("solve"))
 
+    # Init interaction
+    @emptyTool = new paper.Tool()
+    @puzzleTool = @createPuzzleTool()
+    @emptyTool.activate()
+    @addEventListener("solve", => @puzzleTool.remove())
+
   startGame: ->
-    @installEventHandlers()
     @shuffle()
+    @puzzleTool.activate()
     @started = true
 
   destroy: ->
@@ -121,7 +127,8 @@ class Puzzle extends EventDispatcher
   # Show solution
 
   showSolution: ->
-    if @started
+    if @started and not @lastPlacement
+      @emptyTool.activate()
       @lastPlacement = @currentPlacement()
       _.each(@tiles, (tile) -> tile.placeAt(tile.gridId))
 
@@ -129,6 +136,7 @@ class Puzzle extends EventDispatcher
     if @started and @lastPlacement
       _.each(@tiles, (tile, i) => tile.placeAt(@lastPlacement[i]))
       delete @lastPlacement
+      @puzzleTool.activate()
 
   # Crop original image
 
@@ -224,13 +232,13 @@ class Puzzle extends EventDispatcher
 
   # Interaction
 
-  installEventHandlers: ->
+  createPuzzleTool: ->
     tool = new paper.Tool()
     _.bindAll(this, "onMouseDown", "onMouseDrag", "onMouseUp")
     tool.onMouseDown = @onMouseDown
     tool.onMouseDrag = @onMouseDrag
     tool.onMouseUp = @onMouseUp
-    @addEventListener("solve", -> tool.remove())
+    return tool
 
   limitToView: (point) ->
     bounds = @scope.view.bounds
