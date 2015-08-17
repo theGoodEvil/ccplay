@@ -21,7 +21,7 @@ loadImageDeferred = (srcUrl) ->
 
 loadWikipediaArticleDeferred = (link) ->
   title = _.last(link.split("wiki/"))
-  articleUrl = "http://de.wikipedia.org/w/api.php?format=json&action=parse&prop=text&page=#{title}"
+  articleUrl = "https://de.wikipedia.org/w/api.php?format=json&action=parse&prop=text&page=#{title}"
   $.getJSON(proxyUrl(articleUrl)).then (json) ->
     return json.parse.text["*"]
 
